@@ -1,8 +1,9 @@
 const { fontFamily } = require('tailwindcss/defaultTheme');
 const defaultTheme = require('tailwindcss/defaultTheme');
+const withMT = require("@material-tailwind/react/utils/withMT");
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+module.exports = withMT({
   darkMode: ["class"], 
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -84,9 +85,11 @@ module.exports = {
         },
       },
       borderRadius: {
+        /* this gets rid of all rounded borders
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        */
       },
       fontFamily: {
         // Use CSS variable names defined in app/layout.tsx (or similar)
@@ -121,6 +124,6 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")], 
-}
+});
 
 // Removed the corePlugins section to re-enable Tailwind's Preflight base styles.

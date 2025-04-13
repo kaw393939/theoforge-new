@@ -27,6 +27,8 @@ const Header: React.FC = () => {
     { label: "The Forge", path: "/forge" }, 
     { label: "Community", path: "/community" },
     { label: "Contact", path: "/contact" },
+    { label: "Sign In", path: "/login" },
+    { label: "Register", path: "/register" },
   ];
 
   return (
