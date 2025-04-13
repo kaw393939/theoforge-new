@@ -103,7 +103,7 @@ interface ChatBoxProps {
 // AI setup
 const AI_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 const SYSTEM_PROMPT = "You are a helpful, friendly AI assistant for Theoforge, a company that specializes in ETL Solutions, Knowledge Graphs, and Custom LLM Training. Your goal is to be helpful, gather information about the guest to better assist them, and ultimately help convert them to customers. Ask questions one at a time to learn about their needs. Be concise but friendly.";
-const apiKey = process.env.VITE_OPENAI_API_KEY || '';
+const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || '';
 
 // Questions to ask guests
 const GUEST_QUESTIONS: Question[] = [
@@ -771,7 +771,6 @@ export function ChatBox({
             </div>
           </div>
         </CardHeader>
-        
         {/* Message Container */}
         <CardBody 
           ref={chatContainerRef} 
