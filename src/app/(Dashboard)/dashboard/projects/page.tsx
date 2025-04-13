@@ -24,6 +24,7 @@ import {
   Textarea,
   Alert,
 } from "@material-tailwind/react";
+import { colors } from '@material-tailwind/react/types/generic';
 
 interface Project {
   id: number,

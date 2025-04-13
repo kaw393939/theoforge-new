@@ -28,7 +28,7 @@ import {
   Option,
   Textarea
 } from "@material-tailwind/react";
-import KnowledgeGraph from './KnowledgeGraph';
+import KnowledgeGraph from '@/components/Dashboard/KnowledgeGraph';
 
 export function KnowledgeGraphPage() {
   const [isAddNodeModalOpen, setIsAddNodeModalOpen] = useState(false);

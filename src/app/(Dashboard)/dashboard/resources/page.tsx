@@ -312,439 +312,453 @@ const Resources: React.FC = () => {
   };
 
   return (
-    <div className="w-full">
-      {/* Success/Error Alert */}
-      {showAlert.show && (
-        <Alert
-          open={showAlert.show}
-          onClose={() => setShowAlert(prev => ({ ...prev, show: false }))}
-          animate={{
-            mount: { y: 0 },
-            unmount: { y: -100 },
-          }}
-          className="fixed top-4 right-4 z-50 max-w-md"
-          color={showAlert.type === "success" ? "green" : "red"}
-          icon={
-            showAlert.type === "success" ? (
-              <CheckIcon className="h-6 w-6" />
-            ) : (
-              <ExclamationCircleIcon className="h-6 w-6" />
-            )
-          }
-        >
-          {showAlert.message}
-        </Alert>
-      )}
-
-      {/* Resources Header */}
-      <Card className="w-full shadow-sm border border-gray-100 mb-6">
-        <CardBody>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <Typography variant="h4" color="blue-gray" className="mb-1">
-                Resources
-              </Typography>
-              <Typography color="gray" className="font-normal">
-                Manage your files and documents
-              </Typography>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <div>
-                <IconButton
-                  onClick={loadResources}
-                  variant="text"
-                  color="teal"
-                  className="h-8 w-8 rounded-full hover:bg-white/20 transition-all"
-                  size="sm"
-                >
-                  <ArrowPathIcon className="h-4 w-4" />
-                </IconButton>
-              </div>
-              <div className="w-full md:w-auto">
-                <Input
-                  label="Search files"
-                  icon={<DocumentIcon className="h-5 w-5 text-blue-gray-300" />}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="min-w-[250px]" crossOrigin={undefined}                />
-              </div>
-              <Button
-                className="flex items-center gap-2"
-                color="teal"
-                onClick={() => setIsUploadModalOpen(true)}
-              >
-                <CloudArrowUpIcon className="h-4 w-4" /> Upload File
-              </Button>
-            </div>
-          </div>
-        </CardBody>
-      </Card>
-
-      {/* Resources Content */}
-      <Card className="w-full shadow-sm border border-gray-100">
-        <CardHeader floated={false} shadow={false} className="rounded-none pt-4 pb-0">
-          <Tabs value={activeTab}>
-            <TabsHeader className="bg-gray-100 rounded-lg p-1">
-              <Tab 
-                value="all" 
-                onClick={() => setActiveTab("all")}
-                className={activeTab === "all" ? "font-medium" : ""}
-              >
-                All Files
-              </Tab>
-              <Tab 
-                value="documents" 
-                onClick={() => setActiveTab("documents")}
-                className={activeTab === "documents" ? "font-medium" : ""}
-              >
-                Documents
-              </Tab>
-              <Tab 
-                value="images" 
-                onClick={() => setActiveTab("images")}
-                className={activeTab === "images" ? "font-medium" : ""}
-              >
-                Images
-              </Tab>
-              <Tab 
-                value="other" 
-                onClick={() => setActiveTab("other")}
-                className={activeTab === "other" ? "font-medium" : ""}
-              >
-                Other
-              </Tab>
-            </TabsHeader>
-            <TabsBody animate={{ initial: { y: 250 }, mount: { y: 0 }, unmount: { y: 250 } }}>
-              {["all", "documents", "images", "other"].map((value) => (
-                <TabPanel key={value} value={value} className="p-0">
-                  {filteredResources.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="w-full min-w-max table-auto text-left">
-                        <thead>
-                          <tr>
-                            <th className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal leading-none opacity-70"
-                              >
-                                Name
-                              </Typography>
-                            </th>
-                            <th className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal leading-none opacity-70"
-                              >
-                                Type
-                              </Typography>
-                            </th>
-                            <th className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal leading-none opacity-70"
-                              >
-                                Description
-                              </Typography>
-                            </th>
-                            <th className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal leading-none opacity-70"
-                              >
-                                Actions
-                              </Typography>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredResources.map((resource, index) => {
-                            const isLast = index === filteredResources.length - 1;
-                            const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-
-                            return (
-                              <tr key={resource.id} className="hover:bg-blue-gray-50/30">
-                                <td className={classes}>
-                                  <div className="flex items-center gap-3">
-                                    {getFileIcon(resource.resource_type)}
-                                    <div>
-                                      <Typography variant="small" color="blue-gray" className="font-medium w-32 overscroll-x-contain overflow-auto">
-                                        {resource.name}
-                                      </Typography>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className={classes}>
-                                  <Chip
-                                    size="sm"
-                                    variant="ghost"
-                                    value={resource.resource_type.toUpperCase()}
-                                    color={getTypeColor(resource.resource_type)}
-                                  />
-                                </td>
-                                <td className={classes}>
-                                  <Typography variant="small" color="blue-gray" className="font-medium w-32 overscroll-x-contain overflow-auto">
-                                    {resource.description ? resource.description : ''}
-                                  </Typography>
-                                </td>
-                                <td className={classes}>
-                                  <div className="flex items-center gap-2">
-                                    {/* Edit button */}
-                                    <IconButton
-                                      variant="text"
-                                      color="blue-gray"
-                                      onClick={() => {
-                                        setSelectedResource(resource);
-                                        setIsEditModalOpen(true);
-                                      }}
-                                    >
-                                      <PencilIcon className="h-4 w-4" />
-                                    </IconButton>
-                                    
-                                    {/* Delete button */}
-                                    <IconButton
-                                      variant="text"
-                                      color="red"
-                                      onClick={() => {
-                                        setSelectedResource(resource);
-                                        setIsDeleteModalOpen(true);
-                                      }}
-                                    >
-                                      <TrashIcon className="h-4 w-4" />
-                                    </IconButton>
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-12">
-                      <FolderIcon className="h-16 w-16 text-blue-gray-200 mb-4" />
-                      <Typography color="blue-gray" className="mb-2 font-medium">
-                        No files found
-                      </Typography>
-                      <Typography color="gray" className="text-center max-w-xs">
-                        {searchQuery
-                          ? `No files matching "${searchQuery}" were found. Try a different search term.`
-                          : activeTab === "all"
-                          ? "You haven't uploaded any files yet. Click the 'Upload File' button to get started."
-                          : activeTab === "documents"
-                          ? "You haven't uploaded any documents yet. Click the 'Upload File' button to get started."
-                          : activeTab === "images"
-                          ? "You haven't uploaded any images yet. Click the 'Upload File' button to get started."
-                          : ""}
-                      </Typography>
-                      <Button
-                        variant="text"
-                        color="teal"
-                        className="mt-4 flex items-center gap-2"
-                        onClick={() => setIsUploadModalOpen(true)}
-                      >
-                        <CloudArrowUpIcon className="h-4 w-4" /> Upload File
-                      </Button>
-                    </div>
-                  )}
-                </TabPanel>
-              ))}
-            </TabsBody>
-          </Tabs>
-        </CardHeader>
-      </Card>
-
-      {/* Upload Modal */}
-      <Dialog
-        open={isUploadModalOpen}
-        handler={() => !isUploading && cancelFileUpload()}
-        size="md"
-      >
-        <DialogHeader>Upload Files</DialogHeader>
-        <DialogBody divider>
-          <div
-            className={cn(
-              uploadFile ? "border-black" : "border-dashed",
-              "border-2 rounded-lg p-8 transition-colors cursor-pointer text-center",
-              isDragging
-                ? "border-teal-500 bg-teal-50"
-                : "border-blue-gray-200 hover:border-teal-500 hover:bg-teal-50/30"
-            )}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {isUploading ? (
-              <div className="flex flex-col items-center justify-center gap-4">
-                <Spinner className="h-12 w-12 text-teal-500" />
-                <Typography color="teal" className="font-medium">
-                  Uploading...
-                </Typography>
-              </div>
-            ) : uploadFile ? (
-              <div className="flex items-center gap-3">
-                  <div>{getFileNameIcon(uploadFile.name)}</div>
-                  <Typography variant="small" color="blue-gray" className="font-medium overscroll-x-contain overflow-auto">
-                    {uploadFile.name}
-                  </Typography>
-              </div>
-            ) : (
-              <>
-                <CloudArrowUpIcon className="h-12 w-12 text-blue-gray-300 mx-auto mb-4" />
-                <Typography color="blue-gray" className="font-medium mb-1">
-                  Drag and drop a file here
-                </Typography>
-                <Typography color="gray" className="text-sm">
-                  or <span className="text-teal-500 font-medium">browse</span> to upload
-                </Typography>
-                <Typography color="gray" className="text-xs mt-4">
-                  Supported formats: PDF, JPG, JPEG, PNG, GIF
-                </Typography>
-              </>
-            )}
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              onChange={handleFileInputChange}
-              accept=".pdf,.jpg,.jpeg,.png,.gif"
-              disabled={isUploading}
-            />
-          </div>
-          <div className='mt-4'>
-            <Input
-              label="Description"
-              value={fileDescription}
-              onChange={(e) => {setFileDescription(e.target.value);}}
-              crossOrigin={undefined}
-            />
-          </div>
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="red"
-            onClick={() => !isUploading && cancelFileUpload()}
-            disabled={isUploading}
-          >
-            Cancel
-          </Button>
-          {uploadFile && (
-            <Button
-              color="teal"
-              onClick={handleFileUpload}
-            >Upload</Button>
+    <Card className="border border-gray-100 overflow-hidden">
+      <div className="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <Typography variant="h5" color="blue-gray">
+            Resources
+          </Typography>
+          <Typography variant="small" color="gray">
+            Manage your files and documents
+          </Typography>
+        </div>
+      </div>
+      <div className="p-4">
+        <div className="w-full">
+          {/* Success/Error Alert */}
+          {showAlert.show && (
+            <Alert
+              open={showAlert.show}
+              onClose={() => setShowAlert(prev => ({ ...prev, show: false }))}
+              animate={{
+                mount: { y: 0 },
+                unmount: { y: -100 },
+              }}
+              className="fixed top-4 right-4 z-50 max-w-md"
+              color={showAlert.type === "success" ? "green" : "red"}
+              icon={
+                showAlert.type === "success" ? (
+                  <CheckIcon className="h-6 w-6" />
+                ) : (
+                  <ExclamationCircleIcon className="h-6 w-6" />
+                )
+              }
+            >
+              {showAlert.message}
+            </Alert>
           )}
-        </DialogFooter>
-      </Dialog>
-      
-      {/* Edit Modal */}
-      <Dialog
-        open={isEditModalOpen}
-        handler={() => !isUploading && cancelFileUpload()}
-        size="md"
-      >
-        <DialogHeader>Edit Files</DialogHeader>
-        <DialogBody divider>
-          <div
-            className={cn(
-              "border-2 border-black rounded-lg p-8 transition-colors cursor-pointer text-center",
-              isDragging
-                ? "border-teal-500 bg-teal-50"
-                : "border-blue-gray-200 hover:border-teal-500 hover:bg-teal-50/30"
-            )}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {isUploading ? (
-              <div className="flex flex-col items-center justify-center gap-4">
-                <Spinner className="h-12 w-12 text-teal-500" />
-                <Typography color="teal" className="font-medium">
-                  Uploading...
-                </Typography>
-              </div>
-            ) : uploadFile ? (
-              <div className="flex items-center gap-3">
-                  <div>{getFileNameIcon(uploadFile.name)}</div>
-                  <Typography variant="small" color="blue-gray" className="font-medium overscroll-x-contain overflow-auto">
-                    {uploadFile.name}
-                  </Typography>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                  <div>{getFileIcon(selectedResource ? selectedResource.resource_type : '')}</div>
-                  <Typography variant="small" color="blue-gray" className="font-medium overscroll-x-contain overflow-auto">
-                    {selectedResource ? selectedResource.name : ''}
-                  </Typography>
-              </div>
-            )}
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              onChange={handleFileInputChange}
-              accept=".pdf,.jpg,.jpeg,.png,.gif"
-              disabled={isUploading}
-            />
-          </div>
-          <div className='mt-4'>
-            <Input
-              label="Description"
-              value={fileDescription}
-              onChange={(e) => {setFileDescription(e.target.value);}}
-              crossOrigin={undefined}
-            />
-          </div>
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="red"
-            onClick={() => !isUploading && cancelFileUpload()}
-            disabled={isUploading}
-          >
-            Cancel
-          </Button>
-          <Button
-            color="teal"
-            onClick={editResource}
-          >
-            Edit
-          </Button>
-        </DialogFooter>
-      </Dialog>
 
-      {/* DeleteConfirmation Modal */}
-      <Dialog
-        open={isDeleteModalOpen}
-        handler={() => setIsDeleteModalOpen(false)}
-        size="xs"
-      >
-        <DialogHeader>Confirm Deletion</DialogHeader>
-        <DialogBody divider>
-          Are you sure you want to delete{" "}
-          <span className="font-medium">{selectedResource?.name}</span>? This action cannot be undone.
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="blue-gray"
-            onClick={() => setIsDeleteModalOpen(false)}
+          {/* Resources Header */}
+          <Card className="w-full shadow-sm border border-gray-100 mb-6">
+            <CardBody>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <Typography variant="h4" color="blue-gray" className="mb-1">
+                    Resources
+                  </Typography>
+                  <Typography color="gray" className="font-normal">
+                    Manage your files and documents
+                  </Typography>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div>
+                    <IconButton
+                      onClick={loadResources}
+                      variant="text"
+                      color="teal"
+                      className="h-8 w-8 rounded-full hover:bg-white/20 transition-all"
+                      size="sm"
+                    >
+                      <ArrowPathIcon className="h-4 w-4" />
+                    </IconButton>
+                  </div>
+                  <div className="w-full md:w-auto">
+                    <Input
+                      label="Search files"
+                      icon={<DocumentIcon className="h-5 w-5 text-blue-gray-300" />}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="min-w-[250px]" crossOrigin={undefined}                />
+                  </div>
+                  <Button
+                    className="flex items-center gap-2"
+                    color="teal"
+                    onClick={() => setIsUploadModalOpen(true)}
+                  >
+                    <CloudArrowUpIcon className="h-4 w-4" /> Upload File
+                  </Button>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+
+          {/* Resources Content */}
+          <Card className="w-full shadow-sm border border-gray-100">
+            <CardHeader floated={false} shadow={false} className="rounded-none pt-4 pb-0">
+              <Tabs value={activeTab}>
+                <TabsHeader className="bg-gray-100 rounded-lg p-1">
+                  <Tab 
+                    value="all" 
+                    onClick={() => setActiveTab("all")}
+                    className={activeTab === "all" ? "font-medium" : ""}
+                  >
+                    All Files
+                  </Tab>
+                  <Tab 
+                    value="documents" 
+                    onClick={() => setActiveTab("documents")}
+                    className={activeTab === "documents" ? "font-medium" : ""}
+                  >
+                    Documents
+                  </Tab>
+                  <Tab 
+                    value="images" 
+                    onClick={() => setActiveTab("images")}
+                    className={activeTab === "images" ? "font-medium" : ""}
+                  >
+                    Images
+                  </Tab>
+                  <Tab 
+                    value="other" 
+                    onClick={() => setActiveTab("other")}
+                    className={activeTab === "other" ? "font-medium" : ""}
+                  >
+                    Other
+                  </Tab>
+                </TabsHeader>
+                <TabsBody animate={{ initial: { y: 250 }, mount: { y: 0 }, unmount: { y: 250 } }}>
+                  {["all", "documents", "images", "other"].map((value) => (
+                    <TabPanel key={value} value={value} className="p-0">
+                      {filteredResources.length > 0 ? (
+                        <div className="overflow-x-auto">
+                          <table className="w-full min-w-max table-auto text-left">
+                            <thead>
+                              <tr>
+                                <th className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal leading-none opacity-70"
+                                  >
+                                    Name
+                                  </Typography>
+                                </th>
+                                <th className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal leading-none opacity-70"
+                                  >
+                                    Type
+                                  </Typography>
+                                </th>
+                                <th className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal leading-none opacity-70"
+                                  >
+                                    Description
+                                  </Typography>
+                                </th>
+                                <th className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal leading-none opacity-70"
+                                  >
+                                    Actions
+                                  </Typography>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filteredResources.map((resource, index) => {
+                                const isLast = index === filteredResources.length - 1;
+                                const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+
+                                return (
+                                  <tr key={resource.id} className="hover:bg-blue-gray-50/30">
+                                    <td className={classes}>
+                                      <div className="flex items-center gap-3">
+                                        {getFileIcon(resource.resource_type)}
+                                        <div>
+                                          <Typography variant="small" color="blue-gray" className="font-medium w-32 overscroll-x-contain overflow-auto">
+                                            {resource.name}
+                                          </Typography>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className={classes}>
+                                      <Chip
+                                        size="sm"
+                                        variant="ghost"
+                                        value={resource.resource_type.toUpperCase()}
+                                        color={getTypeColor(resource.resource_type)}
+                                      />
+                                    </td>
+                                    <td className={classes}>
+                                      <Typography variant="small" color="blue-gray" className="font-medium w-32 overscroll-x-contain overflow-auto">
+                                        {resource.description ? resource.description : ''}
+                                      </Typography>
+                                    </td>
+                                    <td className={classes}>
+                                      <div className="flex items-center gap-2">
+                                        {/* Edit button */}
+                                        <IconButton
+                                          variant="text"
+                                          color="blue-gray"
+                                          onClick={() => {
+                                            setSelectedResource(resource);
+                                            setIsEditModalOpen(true);
+                                          }}
+                                        >
+                                          <PencilIcon className="h-4 w-4" />
+                                        </IconButton>
+                                        
+                                        {/* Delete button */}
+                                        <IconButton
+                                          variant="text"
+                                          color="red"
+                                          onClick={() => {
+                                            setSelectedResource(resource);
+                                            setIsDeleteModalOpen(true);
+                                          }}
+                                        >
+                                          <TrashIcon className="h-4 w-4" />
+                                        </IconButton>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-12">
+                          <FolderIcon className="h-16 w-16 text-blue-gray-200 mb-4" />
+                          <Typography color="blue-gray" className="mb-2 font-medium">
+                            No files found
+                          </Typography>
+                          <Typography color="gray" className="text-center max-w-xs">
+                            {searchQuery
+                              ? `No files matching "${searchQuery}" were found. Try a different search term.`
+                              : activeTab === "all"
+                              ? "You haven't uploaded any files yet. Click the 'Upload File' button to get started."
+                              : activeTab === "documents"
+                              ? "You haven't uploaded any documents yet. Click the 'Upload File' button to get started."
+                              : activeTab === "images"
+                              ? "You haven't uploaded any images yet. Click the 'Upload File' button to get started."
+                              : ""}
+                          </Typography>
+                          <Button
+                            variant="text"
+                            color="teal"
+                            className="mt-4 flex items-center gap-2"
+                            onClick={() => setIsUploadModalOpen(true)}
+                          >
+                            <CloudArrowUpIcon className="h-4 w-4" /> Upload File
+                          </Button>
+                        </div>
+                      )}
+                    </TabPanel>
+                  ))}
+                </TabsBody>
+              </Tabs>
+            </CardHeader>
+          </Card>
+
+          {/* Upload Modal */}
+          <Dialog
+            open={isUploadModalOpen}
+            handler={() => !isUploading && cancelFileUpload()}
+            size="md"
           >
-            Cancel
-          </Button>
-          <Button color="red" onClick={deleteResource}>
-            Delete
-          </Button>
-        </DialogFooter>
-      </Dialog>
-    </div>
+            <DialogHeader>Upload Files</DialogHeader>
+            <DialogBody divider>
+              <div
+                className={cn(
+                  uploadFile ? "border-black" : "border-dashed",
+                  "border-2 rounded-lg p-8 transition-colors cursor-pointer text-center",
+                  isDragging
+                    ? "border-teal-500 bg-teal-50"
+                    : "border-blue-gray-200 hover:border-teal-500 hover:bg-teal-50/30"
+                )}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {isUploading ? (
+                  <div className="flex flex-col items-center justify-center gap-4">
+                    <Spinner className="h-12 w-12 text-teal-500" />
+                    <Typography color="teal" className="font-medium">
+                      Uploading...
+                    </Typography>
+                  </div>
+                ) : uploadFile ? (
+                  <div className="flex items-center gap-3">
+                      <div>{getFileNameIcon(uploadFile.name)}</div>
+                      <Typography variant="small" color="blue-gray" className="font-medium overscroll-x-contain overflow-auto">
+                        {uploadFile.name}
+                      </Typography>
+                  </div>
+                ) : (
+                  <>
+                    <CloudArrowUpIcon className="h-12 w-12 text-blue-gray-300 mx-auto mb-4" />
+                    <Typography color="blue-gray" className="font-medium mb-1">
+                      Drag and drop a file here
+                    </Typography>
+                    <Typography color="gray" className="text-sm">
+                      or <span className="text-teal-500 font-medium">browse</span> to upload
+                    </Typography>
+                    <Typography color="gray" className="text-xs mt-4">
+                      Supported formats: PDF, JPG, JPEG, PNG, GIF
+                    </Typography>
+                  </>
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileInputChange}
+                  accept=".pdf,.jpg,.jpeg,.png,.gif"
+                  disabled={isUploading}
+                />
+              </div>
+              <div className='mt-4'>
+                <Input
+                  label="Description"
+                  value={fileDescription}
+                  onChange={(e) => {setFileDescription(e.target.value);}}
+                  crossOrigin={undefined}
+                />
+              </div>
+            </DialogBody>
+            <DialogFooter>
+              <Button
+                variant="text"
+                color="red"
+                onClick={() => !isUploading && cancelFileUpload()}
+                disabled={isUploading}
+              >
+                Cancel
+              </Button>
+              {uploadFile && (
+                <Button
+                  color="teal"
+                  onClick={handleFileUpload}
+                >Upload</Button>
+              )}
+            </DialogFooter>
+          </Dialog>
+          
+          {/* Edit Modal */}
+          <Dialog
+            open={isEditModalOpen}
+            handler={() => !isUploading && cancelFileUpload()}
+            size="md"
+          >
+            <DialogHeader>Edit Files</DialogHeader>
+            <DialogBody divider>
+              <div
+                className={cn(
+                  "border-2 border-black rounded-lg p-8 transition-colors cursor-pointer text-center",
+                  isDragging
+                    ? "border-teal-500 bg-teal-50"
+                    : "border-blue-gray-200 hover:border-teal-500 hover:bg-teal-50/30"
+                )}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {isUploading ? (
+                  <div className="flex flex-col items-center justify-center gap-4">
+                    <Spinner className="h-12 w-12 text-teal-500" />
+                    <Typography color="teal" className="font-medium">
+                      Uploading...
+                    </Typography>
+                  </div>
+                ) : uploadFile ? (
+                  <div className="flex items-center gap-3">
+                      <div>{getFileNameIcon(uploadFile.name)}</div>
+                      <Typography variant="small" color="blue-gray" className="font-medium overscroll-x-contain overflow-auto">
+                        {uploadFile.name}
+                      </Typography>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                      <div>{getFileIcon(selectedResource ? selectedResource.resource_type : '')}</div>
+                      <Typography variant="small" color="blue-gray" className="font-medium overscroll-x-contain overflow-auto">
+                        {selectedResource ? selectedResource.name : ''}
+                      </Typography>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileInputChange}
+                  accept=".pdf,.jpg,.jpeg,.png,.gif"
+                  disabled={isUploading}
+                />
+              </div>
+              <div className='mt-4'>
+                <Input
+                  label="Description"
+                  value={fileDescription}
+                  onChange={(e) => {setFileDescription(e.target.value);}}
+                  crossOrigin={undefined}
+                />
+              </div>
+            </DialogBody>
+            <DialogFooter>
+              <Button
+                variant="text"
+                color="red"
+                onClick={() => !isUploading && cancelFileUpload()}
+                disabled={isUploading}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="teal"
+                onClick={editResource}
+              >
+                Edit
+              </Button>
+            </DialogFooter>
+          </Dialog>
+
+          {/* DeleteConfirmation Modal */}
+          <Dialog
+            open={isDeleteModalOpen}
+            handler={() => setIsDeleteModalOpen(false)}
+            size="xs"
+          >
+            <DialogHeader>Confirm Deletion</DialogHeader>
+            <DialogBody divider>
+              Are you sure you want to delete{" "}
+              <span className="font-medium">{selectedResource?.name}</span>? This action cannot be undone.
+            </DialogBody>
+            <DialogFooter>
+              <Button
+                variant="text"
+                color="blue-gray"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button color="red" onClick={deleteResource}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </Dialog>
+        </div>
+      </div>
+    </Card>
   );
 }
 
