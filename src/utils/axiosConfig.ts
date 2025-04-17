@@ -1,7 +1,15 @@
 // src/utils/axiosConfig.ts
 import axios from 'axios';
-const useLocalhost = false;
-export const API_URL = useLocalhost ? "http://localhost:8000" : "https://dev.theoforge.com/API"
+
+// Set to true when running in Docker, or when running the backend locally
+const useLocalhost = true;
+
+// When using Docker, the backend service name 'backend' will resolve to the container's IP
+// When running locally outside Docker, use localhost
+const dockerBackend = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
+const localBackendUrl = dockerBackend ? "http://backend:8000" : "http://localhost:8000";
+
+export const API_URL = useLocalhost ? localBackendUrl : "https://dev.theoforge.com/API"
 
 // Create axios instance with base URL
 const axiosInstance = axios.create({

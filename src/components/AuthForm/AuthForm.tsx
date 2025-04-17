@@ -23,7 +23,7 @@ export function AuthForm({ type }: AuthFormProps) {
   const { login, isAuthenticated, register, accessTokenLogin } = useContext(AuthContext);
 
   useEffect(() => {
-    if (isAuthenticated) navigate.push('/dashboard');
+    if (isAuthenticated) navigate.push('/');
   }, [isAuthenticated, navigate]);
 
   // Show success alert
@@ -81,19 +81,25 @@ export function AuthForm({ type }: AuthFormProps) {
       return;
     }
     if (type === 'login') {
-      const response = await login(email, password);
-      if (response === 'OK') navigate.push('/dashboard');
-      else showErrorAlert(response);
-    } else {//type === 'register'
+      const success = await login(email, password);
+      if (success === 'OK') {
+        // Redirect to homepage on successful login
+        navigate.push('/');
+      } else {
+        showErrorAlert(success || 'Invalid email or password');
+      }
+    } else { // type === 'register'
       const response = await register(email, password,
         firstName.length > 0 ? firstName : undefined,
         lastName.length > 0 ? lastName : undefined,
         nickname.length > 0 ? nickname : undefined);
       if (response === 'OK') {
-        // Add email verification here
-        showSuccessAlert('Account created');
-        navigate.push('/login');
-      } else showErrorAlert(response);
+        // On successful registration, redirect to homepage
+        showSuccessAlert('Account created successfully!');
+        navigate.push('/');
+      } else {
+        showErrorAlert(response);
+      }
     }
   };
 
@@ -265,26 +271,7 @@ export function AuthForm({ type }: AuthFormProps) {
               </button>
             </form>
 
-            {type === 'login' && (
-              <>
-                <div className="flex items-center my-6">
-                  <div className="flex-1 border-t border-black/20"></div>
-                  <span className="px-3 text-black text-sm font-sans">Or continue with</span>
-                  <div className="flex-1 border-t border-black/20"></div>
-                </div>
-                
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const success = await login('test@test.com', 'test123');
-                    if (success) navigate.push('/dashboard');
-                  }}
-                  className="w-full flex items-center justify-center py-3 px-4 bg-white border-2 border-black text-black font-medium hover:bg-black/5 transition-all duration-300 font-sans rounded-lg shadow-sm hover:shadow-md"
-                >
-                  <SparklesIcon className="h-5 w-5 mr-2 text-black" /> Test Account
-                </button>
-              </>
-            )}
+            {/* Test account button removed as requested */}
 
             <div className="text-center mt-8 text-black font-sans">
               {type === 'login' ? "Don't have an account?" : "Already have an account?"}{' '}

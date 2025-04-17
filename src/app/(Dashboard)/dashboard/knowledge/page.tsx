@@ -30,7 +30,7 @@ import {
 } from "@material-tailwind/react";
 import KnowledgeGraph from '@/components/Dashboard/KnowledgeGraph';
 
-export function KnowledgeGraphPage() {
+function KnowledgeGraphPage() {
   const [isAddNodeModalOpen, setIsAddNodeModalOpen] = useState(false);
   const [isAddRelationModalOpen, setIsAddRelationModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("visualization");

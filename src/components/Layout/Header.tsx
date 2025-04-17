@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { 
   Sheet, 
@@ -13,11 +13,28 @@ import {
   SheetHeader, 
   SheetTitle, 
 } from "@/components/ui/sheet";
-import { MenuIcon } from 'lucide-react';
+import { MenuIcon, UserCircle, LogOut } from 'lucide-react';
 import Button from '@/components/Common/Button';
 
 const Header: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    // Check if user is logged in
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
+    }
+    setIsLoading(false);
+  }, []);
 
   const navItems = [
     { label: "Home", path: "/" },
@@ -74,22 +91,47 @@ const Header: React.FC = () => {
           ))}
         </nav>
         
-        {/* Auth Buttons */}
+        {/* Auth Buttons or User Profile */}
         <div className="hidden sm:flex items-center gap-3">
-          {authItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.path}
-              className={cn(
-                "text-sm font-bold px-4 py-2 rounded-lg transition-all duration-300",
-                item.primary 
-                  ? "bg-black text-white hover:bg-black/80 shadow-sm hover:shadow-md" 
-                  : "border-2 border-black text-black hover:bg-black/5"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {!isLoading && user ? (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center">
+                <UserCircle className="h-5 w-5 mr-1 text-black" />
+                <span className="text-sm font-bold text-black">
+                  Hi, {user.name || user.email.split('@')[0]}
+                </span>
+              </div>
+              <button 
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+                  window.location.href = '/';
+                }}
+                className="text-sm font-medium text-black/60 hover:text-black flex items-center gap-1"
+                aria-label="Log out"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Log out</span>
+              </button>
+            </div>
+          ) : (
+            <>
+              {authItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.path}
+                  className={cn(
+                    "text-sm font-bold px-4 py-2 rounded-lg transition-all duration-300",
+                    item.primary 
+                      ? "bg-black text-white hover:bg-black/80 shadow-sm hover:shadow-md" 
+                      : "border-2 border-black text-black hover:bg-black/5"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </>
+          )}
         </div>
 
         {/* Mobile Navigation Trigger (Hamburger Menu) */}
@@ -136,21 +178,49 @@ const Header: React.FC = () => {
                 ))}
                 
                 <div className="border-t border-border/40 mt-4 pt-4">
-                  {authItems.map((item) => (
-                    <SheetClose asChild key={item.label}>
-                      <Link
-                        href={item.path}
-                        className={cn(
-                          "block py-3 px-4 text-sm font-bold my-3 rounded-lg text-center transition-all shadow-sm",
-                          item.primary 
-                            ? "bg-black text-white hover:bg-black/80" 
-                            : "border-2 border-black text-black hover:bg-black/5"
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                    </SheetClose>
-                  ))}
+                  {!isLoading && user ? (
+                    <>
+                      <div className="flex items-center px-4 py-3">
+                        <UserCircle className="h-5 w-5 mr-2 text-black" />
+                        <span className="text-sm font-bold text-black">
+                          Hi, {user.name || user.email.split('@')[0]}
+                        </span>
+                      </div>
+                      <SheetClose asChild>
+                        <button 
+                          onClick={() => {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            window.location.href = '/';
+                          }}
+                          className="block w-full py-3 px-4 text-sm font-bold my-3 rounded-lg text-center transition-all shadow-sm bg-black/10 text-black hover:bg-black/20"
+                        >
+                          <div className="flex items-center justify-center gap-2">
+                            <LogOut className="h-4 w-4" />
+                            <span>Log out</span>
+                          </div>
+                        </button>
+                      </SheetClose>
+                    </>
+                  ) : (
+                    <>
+                      {authItems.map((item) => (
+                        <SheetClose asChild key={item.label}>
+                          <Link
+                            href={item.path}
+                            className={cn(
+                              "block py-3 px-4 text-sm font-bold my-3 rounded-lg text-center transition-all shadow-sm",
+                              item.primary 
+                                ? "bg-black text-white hover:bg-black/80" 
+                                : "border-2 border-black text-black hover:bg-black/5"
+                            )}
+                          >
+                            {item.label}
+                          </Link>
+                        </SheetClose>
+                      ))}
+                    </>
+                  )}
                 </div>
               </nav>
             </SheetContent>
