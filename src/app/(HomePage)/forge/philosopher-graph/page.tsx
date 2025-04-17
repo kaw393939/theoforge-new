@@ -10,7 +10,7 @@ import AnalyticsModal from '@/components/Graph/analytics/AnalyticsModal';
 import { NodeDetailPanel } from '@/components/Graph/panels/NodeDetailPanel'; 
 import PageContainer from '@/components/Layout/PageContainer'; 
 import resolveConfig from 'tailwindcss/resolveConfig'; 
-import tailwindConfig from '../../../../tailwind.config.js'; 
+import tailwindConfig from '../../../../../tailwind.config.js'; 
 
 // Dynamically import the graph component to avoid SSR issues
 const DynamicPhilosopherGraph = dynamic(

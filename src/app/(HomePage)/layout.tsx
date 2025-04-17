@@ -20,8 +20,8 @@ const publicSans = Public_Sans({
   weight: ['400', '500', '600', '700'] 
 });
 
-import Header from '../components/Layout/Header'; 
-import Footer from '../components/Layout/Footer'; 
+import Header from '@/components/Layout/Header'; 
+import Footer from '@/components/Layout/Footer'; 
 
 import type { Metadata } from "next";
 

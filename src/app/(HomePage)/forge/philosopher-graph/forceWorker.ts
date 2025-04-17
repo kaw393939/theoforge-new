@@ -1,6 +1,6 @@
 // forceWorker.ts - Web Worker for D3 Force Simulation Calculations
 import * as d3 from 'd3-force';
-import { PhilosopherNode, PhilosopherLink } from '../../../types/graphTypes';
+import { PhilosopherNode, PhilosopherLink } from '@/types/graphTypes';
 
 // Define an interface for the message data received by the worker
 interface WorkerMessage {
