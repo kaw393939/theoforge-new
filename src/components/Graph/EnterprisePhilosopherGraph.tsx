@@ -307,7 +307,7 @@ const EnterprisePhilosopherGraph = forwardRef<ForceGraphMethods, EnterprisePhilo
     } as ForceGraphMethods), []);
 
     useEffect(() => {
-      const worker = new Worker(new URL('../../app/forge/philosopher-graph/forceWorker.ts', import.meta.url));
+      const worker = new Worker(new URL('../../app/(HomePage)/forge/philosopher-graph/forceWorker.ts', import.meta.url));
       workerRef.current = worker;
 
       worker.onmessage = (event: MessageEvent) => {

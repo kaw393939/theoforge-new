@@ -1,15 +1,15 @@
 import * as React from 'react';
-import SectionContainer from '../components/Layout/SectionContainer';
+import SectionContainer from '@/components/Layout/SectionContainer';
 import { Metadata } from 'next';
 import { createMetadataGenerator } from '@/lib/metadataUtils';
 
-import HeroSection from '../components/Home/HeroSection';
-import ServicesSection from '../components/Home/ServicesSection';
-import AboutSection from '../components/Home/AboutSection';
-import TestimonialsSection from '../components/Home/TestimonialsSection';
-import BlogSnippetsSection from '../components/Home/BlogSnippetsSection';
-import ForgeSection from '../components/Home/ForgeSection';
-import CallToActionSection from '../components/Home/CallToActionSection';
+import HeroSection from '@/components/Home/HeroSection';
+import ServicesSection from '@/components/Home/ServicesSection';
+import AboutSection from '@/components/Home/AboutSection';
+import TestimonialsSection from '@/components/Home/TestimonialsSection';
+import BlogSnippetsSection from '@/components/Home/BlogSnippetsSection';
+import ForgeSection from '@/components/Home/ForgeSection';
+import CallToActionSection from '@/components/Home/CallToActionSection';
 
 // Import data fetching functions and types
 import { getSortedPostsData } from '@/lib/posts';

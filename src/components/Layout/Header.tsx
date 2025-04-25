@@ -29,6 +29,11 @@ const Header: React.FC = () => {
     { label: "Contact", path: "/contact" },
   ];
 
+  const authItems = [
+    { label: "Sign In", path: "/login", primary: true },
+    { label: "Register", path: "/register", primary: false },
+  ];
+
   return (
     <header
       className={cn(
@@ -60,14 +65,32 @@ const Header: React.FC = () => {
               key={item.label}
               href={item.path}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === item.path ? "text-primary dark:text-primary-light" : "text-muted-foreground"
+                "text-sm font-semibold transition-colors hover:text-black",
+                pathname === item.path ? "text-black underline" : "text-black/70"
               )}
             >
               {item.label}
             </Link>
           ))}
         </nav>
+        
+        {/* Auth Buttons */}
+        <div className="hidden sm:flex items-center gap-3">
+          {authItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.path}
+              className={cn(
+                "text-sm font-bold px-4 py-2 rounded-lg transition-all duration-300",
+                item.primary 
+                  ? "bg-black text-white hover:bg-black/80 shadow-sm hover:shadow-md" 
+                  : "border-2 border-black text-black hover:bg-black/5"
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
 
         {/* Mobile Navigation Trigger (Hamburger Menu) */}
         <div className="sm:hidden flex items-center">
@@ -103,23 +126,38 @@ const Header: React.FC = () => {
                     <Link
                       href={item.path}
                       className={cn(
-                        "block py-2 text-sm font-medium transition-colors hover:text-primary",
-                        pathname === item.path ? "text-primary dark:text-primary-light" : "text-muted-foreground"
+                        "block py-2 text-sm font-semibold transition-colors hover:text-black",
+                        pathname === item.path ? "text-black underline" : "text-black/70"
                       )}
                     >
                       {item.label}
                     </Link>
                   </SheetClose>
                 ))}
+                
+                <div className="border-t border-border/40 mt-4 pt-4">
+                  {authItems.map((item) => (
+                    <SheetClose asChild key={item.label}>
+                      <Link
+                        href={item.path}
+                        className={cn(
+                          "block py-3 px-4 text-sm font-bold my-3 rounded-lg text-center transition-all shadow-sm",
+                          item.primary 
+                            ? "bg-black text-white hover:bg-black/80" 
+                            : "border-2 border-black text-black hover:bg-black/5"
+                        )}
+                      >
+                        {item.label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
         </div>
 
-        {/* Optional: Placeholder for CTA button if needed on desktop */}
-        {/* <div className="hidden sm:flex items-center"> */}
-        {/*   <Button>Contact Us</Button> */}
-        {/* </div> */}
+        {/* Auth buttons are now in their own section above */}
       </div>
     </header>
   );
