@@ -65,10 +65,6 @@ const sampleGraphData = {
   ]
 };
 
-// AI setup
-const AI_ENDPOINT = "https://api.openai.com/v1/chat/completions";
-const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || '';
-
 export function KnowledgeGraphPage() {
   const graphRef = useRef<ForceGraphMethods | undefined>(undefined);
   const graphContainerRef = useRef<HTMLDivElement>(null);
@@ -322,97 +318,17 @@ export function KnowledgeGraphPage() {
     try {
       setIsLoading(true);
       // Prepare messages for the API
-      const apiMessages = [
-        { 
-          content: 'You are an AI assistant that transforms text into a knowledge graph as JSON. You must identify entities and their relationships.', 
-          role: 'system'
-        },
-        {
-          content: newGraphPrompt,
-          role: 'user'
-        }
-      ];
-      
-      const response = await fetch(AI_ENDPOINT, {
+      const response = await fetch('/api/chat/knowledge', {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-4o",
-          messages: apiMessages,
-          max_tokens: 500,
-          temperature: 0.7,
-          response_format: {
-            "type": "json_schema",
-            "json_schema": {
-              "name": "guestInfo",
-              "strict": true,
-              "schema": {
-                "type": "object",
-                "properties":{
-                  "nodes": {
-                    "description": "Entities in the text",
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties":{
-                        "id": {
-                          "description": "Entity number starting from 1",
-                          "type": "number"
-                        },
-                        "label": {
-                          "description": "Entity name",
-                          "type": "string"
-                        },
-                        "description": {
-                          "description": "Entity description",
-                          "type": "string"
-                        }
-                      },
-                      "required": ["id", "label", "description"],
-                      "additionalProperties": false
-                    }
-                  },
-                  "links": {
-                    "description": "Relationships between entities",
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties":{
-                        "source": {
-                          "description": "Source entity id the relationship is for",
-                          "type": "number"
-                        },
-                        "target": {
-                          "description": "Target entity id the relationship is for",
-                          "type": "number"
-                        },
-                        "label": {
-                          "description": "One or two word relationship",
-                          "type": "string"
-                        }
-                      },
-                      "required": ["source", "target", "label"],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": ["nodes", "links"],
-                "additionalProperties": false
-              }
-            }
-          }
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: newGraphPrompt })
       });
       
+      const data = await response.json();
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.error?.message || `API Error: ${response.statusText}`);
+        throw new Error(data.error || `API Error: ${response.statusText}`);
       }
       
-      const data = await response.json();
       setGraphData(JSON.parse(data.choices[0].message.content));
       setIsNewGraphModalOpen(false);
       showSuccessAlert("Knowledge graph created!");

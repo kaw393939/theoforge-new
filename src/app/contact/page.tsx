@@ -8,7 +8,6 @@ import Paragraph from '@/components/Common/Paragraph';
 import { CheckIcon, ExclamationCircleIcon, MinusIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
 import { API_URL } from '@/components/Dashboard/AppContext';
 
 interface Question {
@@ -42,6 +41,7 @@ const ContactPage: React.FC = () => {
   const [showContactForm, setShowContactForm] = useState(false);
   const [showAlert, setShowAlert] = useState({ show: false, message: "", type: "success" });
   const [theme, setTheme] = useState<Theme>("light");
+  const [isContacting, setIsContacting] = useState(false);
 
   // Show success alert
   const showSuccessAlert = (message: string) => {
@@ -75,40 +75,33 @@ const ContactPage: React.FC = () => {
         showErrorAlert("Please provide your contact info");
         return;
       }
-      const DISCORD_WEBHOOK_URL = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
-      if (DISCORD_WEBHOOK_URL) {
-        let message = "New guest:"
-        Object.entries(guestInfo).forEach(([key, value]) => {
-          // Display string fields
-          if(value && typeof value === 'string') message += `\n${key}: ${value}`;
-          // Display array fields
-          else if (value && value.length > 0 && Array.isArray(value)) message += `\n${key}: ${value.toString()}`;
+      setIsContacting(true);
+      const res = await fetch('/api/chat/guestChat/discord', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(guestInfo),
+      })
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || res.statusText);
+      // Update guest status
+      if (API_URL && guestInfo.id) {
+        await fetch(`${API_URL}/guests/${guestInfo.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'CONTACTED' }),
+        }).catch((error) => {
+          console.error(error);
         });
-        await fetch(DISCORD_WEBHOOK_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: message
-          }),
-        }).then(() => {
-          showSuccessAlert("Contact information sent");
-          setShowContactForm(false);
-          axios.put(`${API_URL}/guests/${guestInfo.id}`, {status: 'CONTACTED'}).then(() => {
-           setGuestInfo({...guestInfo, status: 'CONTACTED'});
-          }).catch((err) => {
-            console.error(err);
-          });
-        }).catch(() => {
-          showErrorAlert("Failed to send contact information");
-        });
+      } else {
+        console.error("Missing API_URL or guestID");
       }
-      else {
-        console.log("No API key provided");
-      }
-    } catch (err: any) {
-      console.log(err.message)
+      showSuccessAlert('Contact information sent');
+      setShowContactForm(false);
+      setGuestInfo((guestInfo) => ({ ...guestInfo, status: 'CONTACTED' }));
+    } catch {
+      showErrorAlert('Failed to send contact information');
+    } finally {
+      setIsContacting(false);
     }
   }
   
@@ -292,6 +285,7 @@ const ContactPage: React.FC = () => {
               <Button
                 className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium"
                 onClick={submitForm}
+                disabled={isContacting}
               >
                 Submit
               </Button>

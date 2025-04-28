@@ -79,9 +79,7 @@ interface Message {
 type Theme = 'light' | 'dark';
 
 // AI setup
-const AI_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 const SYSTEM_PROMPT = "You are TheoForge's AI assistant a company that specializes in Engineering Empowerment, Technology Strategy & Leadership, Workforce Training, Knowledge Graphs, and custom AI platforms. Be friendly, accurate, and focus on helping users find the right information or solution.";
-const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || '';
 
 // Generate a unique ID for messages
 function generateId(): string {
@@ -401,20 +399,17 @@ export function GuestChat() {
       
       // OpenAI function calling
       // Move requests to backend for security
-      const response = await fetch(AI_ENDPOINT, {
+      const response = await fetch('/api/chat/guestChat/functionCall', {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-4",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: latestMessage.content }
           ],
           tools: tools,
-          tool_choice: "auto"
         })
       });
       
@@ -492,19 +487,12 @@ export function GuestChat() {
       `;
       apiMessages[0].role = 'system';
       // Use openai streaming api
-      const streamResponse = await fetch(AI_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
+      const streamResponse = await fetch('/api/chat/guestChat/streamResponse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: "gpt-4o",
           messages: apiMessages,
-          max_tokens: 500,
-          temperature: 0.7,
-          stream: true
-        })
+        }),
       });
       if (!streamResponse.body){
         throw new Error('Failed to get response body');
@@ -761,9 +749,7 @@ export function GuestChat() {
                 <div>
                   <Paragraph variant="body1" className="font-medium">{error}</Paragraph>
                   <Button 
-                    size="sm" 
-                    color="red" 
-                    className="p-0 mt-1" 
+                    className="p-1 text-black bg-gray-500" 
                     onClick={() => setError(null)}
                   >
                     Dismiss

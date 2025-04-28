@@ -3,10 +3,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { redirect } from 'next/navigation';
-
-const useLocalhost = true;
-export const API_URL = useLocalhost ? "http://localhost:8000" : "https://dev.theoforge.com/API"
-
+const useLocalHost = process.env.NEXT_PUBLIC_USE_LOCALHOST || "true";
+export const API_URL = useLocalHost === "true" ? "http://localhost:8000" : "https://dev.theoforge.com/API"
 interface User {
   address: string | null;
   card_number: string | null;
