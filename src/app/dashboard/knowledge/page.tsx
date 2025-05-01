@@ -329,13 +329,19 @@ export function KnowledgeGraphPage() {
         throw new Error(data.error || `API Error: ${response.statusText}`);
       }
       
-      setGraphData(JSON.parse(data.choices[0].message.content));
-      setIsNewGraphModalOpen(false);
+      try {
+        setGraphData(JSON.parse(data.choices[0].message.content))
+      } catch {
+        console.error("Failed to parse JSON response");
+        showErrorAlert("Please try a smaller text");
+        return;
+      };
       showSuccessAlert("Knowledge graph created!");
     } catch (error: any) {
       console.error("Error generating AI response:", error);
       showErrorAlert("Failed to create knowledge graph");
     } finally {
+      setIsNewGraphModalOpen(false);
       setIsLoading(false);
     }
   }

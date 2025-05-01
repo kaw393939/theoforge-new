@@ -194,15 +194,6 @@ export function GuestChat() {
             try {
               const data = JSON.parse(stored);
               if (Array.isArray(data) && data.length > 0) {
-                // Ensure we have a system prompt
-                if (!data.some(msg => msg.role === 'system')) {
-                  data.unshift({
-                    id: generateId(),
-                    role: 'system',
-                    content: SYSTEM_PROMPT,
-                    timestamp: new Date().toISOString()
-                  });
-                }
                 setMessages(data);
                 if(data.length > 2) setShowIntroduction(false);
               }
@@ -288,128 +279,18 @@ export function GuestChat() {
     
     try {
       // Either contact Theoforge, collect relevant site information, or collect guest information
-      // Setup functions for the AI to call
-      const tools = [
-        {
-          type: "function" as const,
-          function: {
-            name: "contactTheoforge",
-            description: "Trigger this function if the user is asking to contact Theoforge company.",
-            parameters: { type: "object", properties: {} },
-          }
-        },
-        {
-          type: "function",
-          function: {
-            name: "getTheoforgeInfo",
-            description: "Retrieves relevant data if the user wants information about the Theoforge company.",
-            parameters: {
-              type: "object",
-              properties: {
-                contextType: {
-                  type: "string",
-                  description: "The type of context to retrieve. Must be one of the predefined values.",
-                  enum: [
-                    "services",
-                    "forge",
-                    "engineeringEmpowerment",
-                    "technologyStrategy",
-                    "workforceTraining",
-                    "genesisEngine",
-                    "characterChat",
-                    "aiOrchestrationPlatform",
-                    "modelContextProtocol",
-                    "knowledgeGraph",
-                    "theoforge"
-                  ]
-                }
-              },
-              required: ["contextType"]
-            }
-          }
-        },
-        {
-          type: "function" as const,
-          function: {
-            name: "collectGuestInfo",
-            description: "Collects and updates structured information about a guest during a chat conversation.",
-            parameters: {
-              type: "object",
-              properties: {
-                name: { type: ["string", "null"], description: "Guest's full name" },
-                company: { type: ["string", "null"], description: "Company associated with the guest" },
-                industry: { type: ["string", "null"], description: "Industry of the guest" },
-                project_type: {
-                  type: "array",
-                  items: { type: "string" },
-                  description: "Type of project guest is interested in"
-                },
-                budget: { type: ["string", "null"], description: "Estimated budget for the project" },
-                timeline: { type: ["string", "null"], description: "Project timeline" },
-                contact_info: { type: ["string", "null"], description: "Guest's contact information" },
-                pain_points: {
-                  type: "array",
-                  items: { type: "string" },
-                  description: "Challenges or problems the guest is facing"
-                },
-                current_tech: {
-                  type: "array",
-                  items: { type: "string" },
-                  description: "Guest's current technology stack"
-                },
-                additional_notes: { type: ["string", "null"], description: "Any short and important additional notes" }
-              },
-              required: [
-                "name", "company", "industry", "project_type",
-                "budget", "timeline", "contact_info",
-                "pain_points", "current_tech", "additional_notes"
-              ],
-              additionalProperties: false
-            }
-          }
-        }
-      ];
-      
-      // Setup message context and prompt
-      let systemContext = ""
-      const systemPrompt = `
-      You are a helpful AI that assists in chatting with website guests.
-
-      Current collected guest information (if any):
-      ${JSON.stringify(guestInfo)}
-
-      Based on the guest's latest message, you MUST either:
-
-      1. Call the "contactTheoforge" tool if the guest requests to contact Theoforge.
-      2. Call the "getTheoforgeInfo" tool if the guests requests information about Theoforge.
-      3. Otherwise, call the "collectGuestInfo" tool to update the collected guest information.
-
-      Important rules:
-      - ONLY update guest information if the user clearly provides their own details.
-      - DO NOT mistake references to external companies, products, technologies, or people as the guest’s personal or company information.
-      - If information is ambiguous or not clearly about the guest, DO NOT update any fields.
-      - The guest's additional info must be under 100 characters.
-      - You MUST call exactly one tool based on the guest's latest message.
-      - Do not generate plain text responses to the guest directly.
-      - Only call the "contactTheoforge" tool if the guest explicitly expresses a desire to contact Theoforge or Keith Williams, the host of the site. Mentions of wanting to talk to other people, companies, or general contacts should NOT trigger this tool.
-      - Only call the "getTheoforgeInfo" tool if the guest asks a question about the website, Theoforge
-      - If the intended recipient is unclear, DO NOT call the "contactTheoforge" tool.
-      `;
+      let systemContext: string = "";
       const latestMessage: Message = updatedMessages[updatedMessages.length - 1];
       
-      // OpenAI function calling
-      // Move requests to backend for security
+      // Call api route for function calling
       const response = await fetch('/api/chat/guestChat/functionCall', {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: latestMessage.content }
-          ],
-          tools: tools,
+          guestInfo: JSON.stringify(guestInfo),
+          message: latestMessage.content
         })
       });
       
@@ -460,38 +341,16 @@ export function GuestChat() {
       
       // Generate an AI response after calling functions
       // Context limitation - use last 15 messages for context (including system prompt)
-      const context: Message[] = updatedMessages.slice(-15);
+      const apiMessages: Message[] = updatedMessages.slice(-10);
       
-      // Ensure system prompt is included
-      if (!context.some(msg => msg.role === 'system')) {
-        context.unshift({
-          id: generateId(),
-          role: 'system',
-          content: SYSTEM_PROMPT,
-          timestamp: new Date().toISOString()
-        });
-      }
-      
-      // Prepare messages for the API
-      const apiMessages = context.map(m => ({ 
-        role: m.role, 
-        content: m.content 
-      }));
-      
-      // Add system prompt and context to the first system message
-      apiMessages[0].content = `${SYSTEM_PROMPT}
-      The following guset info has been collected.
-      guest info: """${JSON.stringify(guestInfo)}""".
-      Use if following context if it is provided and useful.
-      context: """${systemContext}""".
-      `;
-      apiMessages[0].role = 'system';
       // Use openai streaming api
       const streamResponse = await fetch('/api/chat/guestChat/streamResponse', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          guestInfo: JSON.stringify(guestInfo),
           messages: apiMessages,
+          context: systemContext
         }),
       });
       if (!streamResponse.body){
@@ -580,7 +439,11 @@ export function GuestChat() {
     setMessages(updatedMessages);
     
     // Get AI response
-    await getAIResponse(updatedMessages);
+    try {
+      await getAIResponse(updatedMessages);
+    } catch {
+      console.error("Failed to handle AI response");
+    }
   };
 
   // Allow sending message with Enter key (without Shift)
@@ -802,6 +665,7 @@ export function GuestChat() {
             disabled={isThinking || !input.trim()}
             className="p-2 rounded-full disabled:opacity-50"
             aria-label="Send message"
+            onClick={() => handleSend()}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
