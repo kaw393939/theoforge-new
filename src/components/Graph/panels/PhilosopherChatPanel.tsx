@@ -36,6 +36,7 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
   const [storageLoaded, setStorageLoaded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Load local storage
   useEffect(() => {
     const storedData = localStorage.getItem("philosopherConversation");
     if (storedData) {
@@ -47,6 +48,7 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
       }
     } else {
       localStorage.setItem("philosopherConversation", JSON.stringify({}));
+      setStorageLoaded(true);
     }
   }, []);
   
@@ -60,6 +62,17 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
   
   // Set messages to those of the selected philosopher
   useEffect(() => {
+    if (storageLoaded && !philosopherMessages[selectedCharacter.name]) {
+      setPhisolopherMessages(prev => ({
+        ...prev,
+        [selectedCharacter.name]: [{
+          id: `intro_${Date.now()}`,
+          content: `Hello, I'm ${selectedCharacter.name}${selectedCharacter.title ? `, ${selectedCharacter.title}` : ''}. What would you like to discuss today?`,
+          role: 'assistant',
+          timestamp: new Date().toISOString(),
+        }]
+      }));
+    }
     setSelectedPhilosopherMessages(philosopherMessages[selectedCharacter.name] || []);
     if (storageLoaded) {
       localStorage.setItem("philosopherConversation", JSON.stringify(philosopherMessages));
@@ -345,20 +358,11 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
       </CardHeader>
       {/* Main chat area */}
       <CardContent className="overflow-y-auto h-96 p-4 bg-white dark:bg-gray-900 relative scroll-smooth space-y-4">
-        {selectedPhilosopherMessages.length === 0 ? (
-          renderMessage({
-            id: `assistant_welcome_${Date.now()}`,
-            content: `Hello, I'm ${selectedCharacter.name}${selectedCharacter.title ? `, ${selectedCharacter.title}` : ''}. What would you like to discuss today?`,
-            role: 'assistant',
-            timestamp: new Date().toISOString(),
-          })
-        ) : (
           <div className="space-y-4 pb-4">
             {selectedPhilosopherMessages.map((msg) => 
               renderMessage(msg)
             )}
           </div>
-        )}
         <div ref={messagesEndRef} />
         {/* Suggestions */}
         {!isStreaming && (
