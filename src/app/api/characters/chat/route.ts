@@ -53,7 +53,8 @@ async function loadCharacterData(characterId: string): Promise<CharacterData | n
                         ${data.cognitive_profile?.cognitive_style ? `Your cognitive style: ${data.cognitive_profile.cognitive_style}` : ''}
                         ${data.speech_patterns?.communication_style ? `Your communication style: ${data.speech_patterns.communication_style}` : ''}
                         Always respond as ${name} would, maintaining character consistency.
-                        You are engaging with a Fortune 100 executive. Keep responses insightful, nuanced, and concise.`;
+                        You are engaging with a Fortune 100 executive. Keep responses insightful, nuanced, and concise.
+                        Respond in one complete sentence of about 25 words or fewer.`;
     
     return {
       id: characterId,
@@ -152,7 +153,7 @@ export async function POST(req: NextRequest) {
       messages: messages,
       stream: true,
       temperature: 0.7,
-      max_tokens: 1000,
+      max_tokens: 50,
     });
 
     // Set up streaming response

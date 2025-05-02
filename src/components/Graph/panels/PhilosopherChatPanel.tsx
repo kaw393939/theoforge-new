@@ -9,7 +9,6 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { ArrowRightIcon, ExclamationCircleIcon, LightBulbIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Tooltip, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import Paragraph from '@/components/Common/Paragraph';
-import { local } from 'd3-selection';
 
 // Message interface
 interface Message {
@@ -46,6 +45,8 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
       } catch {
         console.error("Failed to parse local storage");
       }
+    } else {
+      localStorage.setItem("philosopherConversation", JSON.stringify({}));
     }
   }, []);
   
@@ -159,7 +160,17 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
 
       const reader = streamResponse.body!.getReader();
       const decoder = new TextDecoder();
-      let aiResponse = ""
+      let aiResponse = "";
+      const assistantMessage: Message = {
+        id: `assistant_streaming`,
+        role: 'assistant',
+        content: '',
+        timestamp: new Date().toISOString()
+      };
+      setPhisolopherMessages(prev => ({
+        ...prev,
+        [selectedCharacter.name]: [...updatedMessages, assistantMessage]
+      }));
 
       while (true) {
         const { value, done } = await reader.read();
@@ -180,16 +191,18 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
               return;
             }
             if (msg.content) {
-              setPhisolopherMessages(prev => ({
-                ...prev,
-                [selectedCharacter.name]: [...updatedMessages, {
-                  id: `assistant_${Date.now()}`,
-                  role: 'assistant',
-                  content: aiResponse+msg.content,
-                  timestamp: new Date().toISOString()
-                }]
-              }));
               aiResponse += msg.content;
+              setPhisolopherMessages(prev => {
+                const messages = [...prev[selectedCharacter.name]];
+                messages[messages.length - 1] = {
+                  ...messages[messages.length - 1],
+                  content: aiResponse
+                };
+                return {
+                  ...prev,
+                  [selectedCharacter.name]: messages
+                };
+              });
             }
           } catch (error) {
             console.error('Error parsing chunk:', error);
@@ -331,7 +344,7 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
         </div>
       </CardHeader>
       {/* Main chat area */}
-      <CardContent className="overflow-y-auto p-4 bg-white dark:bg-gray-900 relative scroll-smooth space-y-4">
+      <CardContent className="overflow-y-auto h-96 p-4 bg-white dark:bg-gray-900 relative scroll-smooth space-y-4">
         {selectedPhilosopherMessages.length === 0 ? (
           renderMessage({
             id: `assistant_welcome_${Date.now()}`,
