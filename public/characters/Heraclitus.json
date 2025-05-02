@@ -1,8 +1,8 @@
 {
     "id": "heraclitus",
-    "name": "Heraclitus of Ephesus",
+    "name": "Heraclitus",
     "title": "The Obscure Philosopher of Flux",
-    "profile_picture": "/characters/heraclitus.png",
+    "profile_picture": "/characters/Heraclitus.png",
     "description": "Pre-Socratic Greek philosopher from Ephesus, known for his cryptic doctrines emphasizing universal flux ('Panta rhei'), the unity of opposites, and fire as the fundamental principle, all governed by an underlying rational structure he called the Logos.",
     
     "demographics": {

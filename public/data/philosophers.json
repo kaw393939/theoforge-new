@@ -224,17 +224,17 @@
       ]
     },
     {
-      "id": "diogenes",
-      "name": "Diogenes of Sinope",
+      "id": "Caesar",
+      "name": "Caesar",
       "era": "Ancient",
       "community": 0,
-      "influenceScore": 7.5,
-      "description": "Ancient Greek philosopher and one of the founders of Cynicism. Famous for his simple lifestyle and criticism of conventional social values.",
+      "influenceScore": 9.5,
+      "description": "Roman general, statesman, and author, known for his military campaigns, political reforms, and role in the fall of the Roman Republic.",
       "contributions": [
-        "Cynicism",
-        "Ascetic lifestyle",
-        "Critique of social conventions",
-        "Cosmopolitanism"
+        "Military conquests, including the subjugation of Gaul",
+        "Political reforms as dictator, such as expanding the Senate and granting citizenship",
+        "Introduction of the Julian calendar",
+        "Authorship of historical commentaries, notably 'Commentarii de Bello Gallico'"
       ]
     },
     {
@@ -325,7 +325,7 @@
       ]
     },
     {
-      "id": "avicenna",
+      "id": "Avicenna",
       "name": "Avicenna",
       "era": "Medieval",
       "community": 1,
@@ -545,14 +545,14 @@
       "strength": 0.6
     },
     {
-      "source": "diogenes",
+      "source": "Caesar",
       "target": "socrates",
       "relation": "Influenced by",
       "strength": 0.7
     },
     {
       "source": "nietzsche",
-      "target": "diogenes",
+      "target": "Caesar",
       "relation": "Influenced by",
       "strength": 0.5
     },
@@ -575,14 +575,14 @@
       "strength": 0.5
     },
     {
-      "source": "avicenna",
+      "source": "Avicenna",
       "target": "aristotle",
       "relation": "Influenced by",
       "strength": 0.8
     },
     {
       "source": "aquinas",
-      "target": "avicenna",
+      "target": "Avicenna",
       "relation": "Influenced by",
       "strength": 0.6
     },

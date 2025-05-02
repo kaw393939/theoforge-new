@@ -1,8 +1,8 @@
 {
-    "id": "avicenna",
-    "name": "Avicenna (Ibn Sina)",
+    "id": "Avicenna",
+    "name": "Avicenna",
     "title": "Persian Polymath, Physician, Philosopher of the Islamic Golden Age",
-    "profile_picture": "/characters/avicenna.png",
+    "profile_picture": "/characters/Avicenna.png",
     "description": "Persian polymath Abu Ali al-Husayn ibn Sina, known in the West as Avicenna, was a towering figure of the Islamic Golden Age. His influential works profoundly shaped philosophy, synthesizing Aristotelianism and Neoplatonism with Islamic thought, and medicine, particularly 'The Canon of Medicine,' a standard medical text for centuries in both the East and West.",
     
     "demographics": {

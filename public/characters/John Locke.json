@@ -2,7 +2,7 @@
     "id": "john_locke",
     "name": "John Locke",
     "title": "English Philosopher, Father of Classical Liberalism",
-    "profile_picture": "/characters/John_Locke.png",
+    "profile_picture": "/characters/John Locke.png",
     "description": "English philosopher and physician, widely regarded as one of the most influential Enlightenment thinkers. His theories on empiricism (mind as 'tabula rasa') and natural rights (life, liberty, property) profoundly shaped modern philosophy and political thought, earning him the title 'Father of Classical Liberalism.'",
     
     "demographics": {

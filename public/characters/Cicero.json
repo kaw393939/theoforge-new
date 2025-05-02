@@ -1,8 +1,8 @@
 {
-    "id": "cicero",
-    "name": "Marcus Tullius Cicero",
+    "id": "Cicero",
+    "name": "Cicero",
     "title": "Roman Statesman, Orator, Lawyer, Philosopher",
-    "profile_picture": "/characters/cicero.png",
+    "profile_picture": "/characters/Cicero.png",
     "description": "Roman statesman, lawyer, orator, and philosopher of the late Roman Republic. A master of Latin prose, he introduced Romans to the chief schools of Greek philosophy and created a Latin philosophical vocabulary, while playing a pivotal, often perilous, role in Roman politics.",
     
     "demographics": {
