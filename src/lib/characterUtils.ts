@@ -173,18 +173,18 @@ export const generateFullBio = (character: CharacterData): string => {
 export const generateDefaultConversationTopics = (name: string, character: CharacterData): string[] => {
   // Default topics if none are provided
   const defaultTopics = [
-    `Ask about my background and experiences`,
-    `Discuss my perspective on current events and societal trends`,
-    `Explore my thoughts on technology, innovation, and the future`
+    `Can you talk about your background and experiences`,
+    `What is your perspective on current events and societal trends`,
+    `What are your thoughts on technology, innovation, and the future`
   ];
   
   // Generate character-specific topics if appropriate information exists
   if (character.cognitive_profile?.cognitive_style) {
-    defaultTopics.push(`Discuss my cognitive approach: ${character.cognitive_profile.cognitive_style}`);
+    defaultTopics.push(`Can you explain your cognitive approach: ${character.cognitive_profile.cognitive_style}`);
   }
   
   if (character.philosophical_stance?.worldview_summary) {
-    defaultTopics.push(`Explore my worldview: ${character.philosophical_stance.worldview_summary}`);
+    defaultTopics.push(`Tell me about your worldview: ${character.philosophical_stance.worldview_summary}`);
   }
   
   // Return existing topics if available
