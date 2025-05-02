@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import PageContainer from '@/components/Layout/PageContainer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import AdminDashboardStats from '@/components/Dashboard/AdminDashboardStats';
-import { AlertCircle, Edit, Loader2, Search, Trash2, UserCheck, UserPlus, Users, UserX } from 'lucide-react';
+import { AlertCircle, Edit, Eye, Loader2, Search, Trash2, UserCheck, UserPlus, Users, UserX } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import  Button  from '../ui/button';
 import { Input } from '../ui/input';
@@ -54,6 +54,31 @@ interface Guest {
   additional_notes?: string;
 }
 
+interface User {
+  address: string | null;
+  card_number: string | null;
+  ccv: string | null;
+  city: string | null;
+  created_at: string;
+  email: string;
+  email_verified: boolean;
+  failed_login_attempts: number;
+  first_name: string | null;
+  hashed_password: string;
+  id: string;
+  is_locked: boolean;
+  last_name: string | null;
+  nickname: string | null;
+  phone_number: string | null;
+  role: "ADMIN" | "USER";
+  security_code: string | null;
+  state: string | null;
+  subscription_plan: "PREMIUM" | "BASIC" | "FREE";
+  updated_at: string;
+  verification_token: string | null;
+  zip_code: string | null
+}
+
 // Edit form data interface
 interface EditFormData {
   nickname: string;
@@ -76,6 +101,8 @@ const AdminDashboard: React.FC = () => {
   const [guestError, setGuestError] = useState<string | null>(null);
   const [isGuestsLoading, setIsGuestsLoading] = useState(true);
   const [isGuestDetailsDialogOpen, setIsGuestDetailsDialogOpen] = useState(false);
+  const [isUserDetailsDialogOpen, setIsUserDetailsDialogOpen] = useState(false);
+  const [selectedViewUser, setSelectedViewUser] = useState<AdminUser | null>(null);
 
   const [guests, setGuests] = useState<Guest[]>([]);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -141,6 +168,15 @@ const AdminDashboard: React.FC = () => {
       fetchUsers();
     }
   }, [isAuthenticated, token]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 4000); // 4 seconds, adjust as needed
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   // Filter users based on search term
   const filteredUsers = users.filter(user => 
@@ -533,6 +569,18 @@ const AdminDashboard: React.FC = () => {
                           <TableCell>{formatDate(user.created_at)}</TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                  setSelectedViewUser(user);
+                                  setIsUserDetailsDialogOpen(true);
+                                }}
+                                aria-label="View"
+                              >
+                                <Eye className="h-4 w-4 text-blue-500" />
+                                <span className="sr-only">View</span>
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="icon"
@@ -977,6 +1025,168 @@ const AdminDashboard: React.FC = () => {
           >
             {isAddingUser ? 'Adding...' : 'Add User'}
           </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Guest Details Dialog */}
+      <Dialog open={isGuestDetailsDialogOpen} onOpenChange={setIsGuestDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-md max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Guest Details</DialogTitle>
+            <DialogDescription>
+              Detailed information about this guest.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedGuest ? (
+            <div className="grid gap-4 py-2 overflow-y-auto max-h-[55vh] pr-2">
+              <div>
+                <span className="font-semibold">ID:</span>
+                <span className="ml-2 font-mono text-xs">{selectedGuest.id}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Name:</span>
+                <span className="ml-2">{selectedGuest.name || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Contact Info:</span>
+                <span className="ml-2">{selectedGuest.contact_info || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Company:</span>
+                <span className="ml-2">{selectedGuest.company || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Industry:</span>
+                <span className="ml-2">{selectedGuest.industry || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Project Type:</span>
+                <span className="ml-2">{selectedGuest.project_type?.join(', ') || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Budget:</span>
+                <span className="ml-2">{selectedGuest.budget || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Timeline:</span>
+                <span className="ml-2">{selectedGuest.timeline || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Pain Points:</span>
+                <span className="ml-2">{selectedGuest.pain_points?.join(', ') || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Current Tech:</span>
+                <span className="ml-2">{selectedGuest.current_tech?.join(', ') || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Status:</span>
+                <span className="ml-2">{selectedGuest.status || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Created At:</span>
+                <span className="ml-2">{formatDate(selectedGuest.created_at)}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Updated At:</span>
+                <span className="ml-2">{formatDate(selectedGuest.updated_at)}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Additional Notes:</span>
+                <span className="ml-2">{selectedGuest.additional_notes || 'N/A'}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="text-gray-500">No guest selected.</div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsGuestDetailsDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* User Details Dialog */}
+      <Dialog open={isUserDetailsDialogOpen} onOpenChange={setIsUserDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-md max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>User Details</DialogTitle>
+            <DialogDescription>
+              Detailed information about this user.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedViewUser ? (
+            <div className="grid gap-4 py-2 overflow-y-auto max-h-[55vh] pr-2">
+              <div>
+                <span className="font-semibold">ID:</span>
+                <span className="ml-2 font-mono text-xs">{selectedViewUser.id}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Email:</span>
+                <span className="ml-2">{selectedViewUser.email}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Nickname:</span>
+                <span className="ml-2">{selectedViewUser.nickname || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">First Name:</span>
+                <span className="ml-2">{selectedViewUser.first_name || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Last Name:</span>
+                <span className="ml-2">{selectedViewUser.last_name || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Role:</span>
+                <span className="ml-2">{selectedViewUser.role}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Email Verified:</span>
+                <span className="ml-2">{selectedViewUser.email_verified ? 'Yes' : 'No'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Created At:</span>
+                <span className="ml-2">{formatDate(selectedViewUser.created_at)}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Updated At:</span>
+                <span className="ml-2">{formatDate(selectedViewUser.updated_at)}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Subscription Plan:</span>
+                <span className="ml-2">{selectedViewUser.subscription_plan}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Phone Number:</span>
+                <span className="ml-2">{selectedViewUser.phone_number || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Address:</span>
+                <span className="ml-2">{selectedViewUser.address || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">City:</span>
+                <span className="ml-2">{selectedViewUser.city || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">State:</span>
+                <span className="ml-2">{selectedViewUser.state || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Zip Code:</span>
+                <span className="ml-2">{selectedViewUser.zip_code || 'N/A'}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="text-gray-500">No user selected.</div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsUserDetailsDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
           
