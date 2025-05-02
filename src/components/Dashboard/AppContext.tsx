@@ -5,7 +5,8 @@ import axios from 'axios';
 import { redirect } from 'next/navigation';
 const useLocalHost = process.env.NEXT_PUBLIC_USE_LOCALHOST || "true";
 export const API_URL = useLocalHost === "true" ? "http://localhost:8000" : "https://dev.theoforge.com/API"
-interface User {
+
+export interface User {
   address: string | null;
   card_number: string | null;
   ccv: string | null;
