@@ -14,7 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import Paragraph from '@/components/Common/Paragraph';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/ui/button';
 import ForceGraph, { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d';
 import { Loader2 } from 'lucide-react';
 
@@ -65,7 +65,7 @@ const sampleGraphData = {
   ]
 };
 
-export function KnowledgeGraphPage() {
+const KnowledgeGraphPage: React.FC = () => {
   const graphRef = useRef<ForceGraphMethods | undefined>(undefined);
   const graphContainerRef = useRef<HTMLDivElement>(null);
   const [graphData, setGraphData] = useState<GraphData>(sampleGraphData);

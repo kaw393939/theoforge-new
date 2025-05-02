@@ -18,7 +18,7 @@ import { API_URL } from '@/components/Dashboard/AppContext';
 import axios from 'axios';
 import Paragraph from '../Common/Paragraph';
 import { Tooltip, TooltipContent } from '../ui/tooltip';
-import { Button } from '../ui/button';
+import Button from '../ui/button';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { getTheoforgeInfo } from './Context';
 

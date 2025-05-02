@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import Paragraph from '@/components/Common/Paragraph';
 import { CheckIcon, ExclamationCircleIcon, MinusIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/ui/button';
 import { API_URL } from '@/components/Dashboard/AppContext';
 
 interface Question {
@@ -38,7 +38,7 @@ type Theme = "light" | "dark";
 // Rebuilt Contact Page Component
 const ContactPage: React.FC = () => {
   const [guestInfo, setGuestInfo] = useState<GuestInfo>({id: '', sessionCount: 0, questionsAnswered: []});
-  const [showContactForm, setShowContactForm] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(true);
   const [showAlert, setShowAlert] = useState({ show: false, message: "", type: "success" });
   const [theme, setTheme] = useState<Theme>("light");
   const [isContacting, setIsContacting] = useState(false);
@@ -194,25 +194,23 @@ const ContactPage: React.FC = () => {
                     onChange={(e) => setGuestInfo({ ...guestInfo, project_type: guestInfo.project_type ? guestInfo.project_type.map((value, i) => (i === num ? e.target.value : value)) : [e.target.value] })}
                   />)
                 }
-                <div className="inline-flex flex-row gap-6">
+                <div className="inline-flex flex-row gap-2">
                   <Button
-                    color="green"
                     size="sm"
-                    className="w-max h-max flex items-center gap-1"
+                    className="w-40 h-max bg-teal-800 text-xs hover:bg-teal-700"
                     onClick={() => {
                       setGuestInfo({ ...guestInfo, project_type: guestInfo.project_type ? guestInfo.project_type.concat(['']) : ['']})
                     }}>
-                    Add Project Type<PlusIcon className="h-4 w-4" />
+                    Add Project Type<PlusIcon className="inline ml-2 h-4 w-4" />
                   </Button>
                   <Button
-                    variant="destructive"
                     size="sm"
-                    className="w-max h-max flex items-center gap-1"
+                    className="w-48 h-max bg-red-500 text-xs hover:bg-red-400"
                     disabled={guestInfo.project_type ? (guestInfo.project_type.length === 0 ? true : false) : true}
                     onClick={() => {
                       setGuestInfo({ ...guestInfo, project_type: guestInfo.project_type ? (guestInfo.project_type.length === 1 ? undefined : guestInfo.project_type.slice(0, -1)) : undefined})
                     }}>
-                    Remove Project Type<MinusIcon className="h-4 w-4" />
+                    Remove Project Type<MinusIcon className="inline ml-2 h-4 w-4" />
                   </Button>
                 </div>
                 {
@@ -225,25 +223,23 @@ const ContactPage: React.FC = () => {
                     onChange={(e) => setGuestInfo({ ...guestInfo, pain_points: guestInfo.pain_points ? guestInfo.pain_points.map((value, i) => (i === num ? e.target.value : value)) : [e.target.value] })}
                   />)
                 }
-                <div className="inline-flex flex-row gap-6">
+                <div className="inline-flex flex-row gap-2">
                   <Button
-                    color="green"
                     size="sm"
-                    className="w-max h-max flex items-center gap-1"
+                    className="w-40 h-max bg-teal-800 text-xs hover:bg-teal-700"
                     onClick={() => {
                       setGuestInfo({ ...guestInfo, pain_points: guestInfo.pain_points ? guestInfo.pain_points.concat(['']) : ['']})
                     }}>
-                    Add Pain Point<PlusIcon className="h-4 w-4" />
+                    Add Pain Point<PlusIcon className="inline ml-2 h-4 w-4" />
                   </Button>
                   <Button
-                    variant="destructive"
                     size="sm"
-                    className="w-max h-max flex items-center gap-1"
+                    className="w-48 h-max bg-red-500 text-xs hover:bg-red-400"
                     disabled={guestInfo.pain_points ? (guestInfo.pain_points.length === 0 ? true : false) : true}
                     onClick={() => {
                       setGuestInfo({ ...guestInfo, pain_points: guestInfo.pain_points ? (guestInfo.pain_points.length === 1 ? undefined : guestInfo.pain_points.slice(0, -1)) : undefined})
                     }}>
-                    Remove Pain Point<MinusIcon className="h-4 w-4" />
+                    Remove Pain Point<MinusIcon className="inline ml-2 h-4 w-4" />
                   </Button>
                 </div>
                 {
@@ -256,25 +252,23 @@ const ContactPage: React.FC = () => {
                     onChange={(e) => setGuestInfo({ ...guestInfo, current_tech: guestInfo.current_tech ? guestInfo.current_tech.map((value, i) => (i === num ? e.target.value : value)) : [e.target.value] })}
                   />)
                 }
-                <div className="inline-flex flex-row gap-6">
+                <div className="inline-flex flex-row gap-2">
                   <Button
-                    color="green"
                     size="sm"
-                    className="w-max h-max flex items-center gap-1"
+                    className="w-40 h-max bg-teal-800 text-xs hover:bg-teal-700"
                     onClick={() => {
                       setGuestInfo({ ...guestInfo, current_tech: guestInfo.current_tech ? guestInfo.current_tech.concat(['']) : ['']})
                     }}>
-                    Add Current Tech<PlusIcon className="h-4 w-4" />
+                    Add Current Tech<PlusIcon className="inline ml-2 h-4 w-4" />
                   </Button>
                   <Button
-                    variant="destructive"
                     size="sm"
-                    className="w-max h-max flex items-center gap-1"
+                    className="w-48 h-max bg-red-500 text-xs hover:bg-red-400"
                     disabled={guestInfo.current_tech ? (guestInfo.current_tech.length === 0 ? true : false) : true}
                     onClick={() => {
                       setGuestInfo({ ...guestInfo, current_tech: guestInfo.current_tech ? (guestInfo.current_tech.length === 1 ? undefined : guestInfo.current_tech.slice(0, -1)) : undefined})
                     }}>
-                    Remove Current Tech<MinusIcon className="h-4 w-4" />
+                    Remove Current Tech<MinusIcon className="inline ml-1 h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -305,6 +299,6 @@ const ContactPage: React.FC = () => {
       )}
     </div>
   );
- };
+};
 
 export default ContactPage;
