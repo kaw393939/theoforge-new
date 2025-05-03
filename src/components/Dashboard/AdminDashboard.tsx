@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PageContainer from '@/components/Layout/PageContainer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import AdminDashboardStats from '@/components/Dashboard/AdminDashboardStats';
@@ -8,9 +8,8 @@ import { AlertCircle, Edit, Eye, Loader2, Search, Trash2, UserCheck, UserPlus, U
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import  Button  from '../ui/button';
 import { Input } from '../ui/input';
-import { API_URL, User } from './AppContext';
+import { API_URL, User, AuthProvider, AuthContext } from './AppContext';
 import axios from 'axios';
-import { useAuthStore } from '@/lib/store/authStore';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Label } from '../ui/label';
 
@@ -54,6 +53,7 @@ interface Guest {
   additional_notes?: string;
 }
 
+{/* 
 interface User {
   address: string | null;
   card_number: string | null;
@@ -77,7 +77,7 @@ interface User {
   updated_at: string;
   verification_token: string | null;
   zip_code: string | null
-}
+} */}
 
 // Edit form data interface
 interface EditFormData {
@@ -89,7 +89,7 @@ interface EditFormData {
 }
 
 const AdminDashboard: React.FC = () => {
-  const { isAuthenticated, user, token } = useAuthStore();
+  const { isAuthenticated, user, logout, accessToken } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -145,7 +145,7 @@ const AdminDashboard: React.FC = () => {
       try {
         const response = await axios.get(`${API_URL}/auth/users`, {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${accessToken}`
           }
         });
 
@@ -164,10 +164,10 @@ const AdminDashboard: React.FC = () => {
       }
     };
 
-    if (isAuthenticated && token) {
+    if (isAuthenticated && accessToken) {
       fetchUsers();
     }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, accessToken]);
 
   useEffect(() => {
     if (successMessage) {
@@ -291,7 +291,7 @@ const AdminDashboard: React.FC = () => {
 
   // Save edited user using the admin endpoint
   const saveUserChanges = async () => {
-    if (!selectedUser || !token) return;
+    if (!selectedUser || !accessToken) return;
     
     setIsUpdatingUser(true);
     setError(null);
@@ -332,11 +332,11 @@ const AdminDashboard: React.FC = () => {
       console.log('Updating user with changed fields only:', changedFields);
       
       // Check if token is available and log its first few characters for debugging
-      if (!token) {
+      if (!accessToken) {
         throw new Error('No authentication token available');
       }
       
-      console.log('Using token (first 10 chars):', token.substring(0, 10) + '...');
+      console.log('Using token (first 10 chars):', accessToken.substring(0, 10) + '...');
       console.log('API endpoint:', `${API_URL}/auth/admin/users/${selectedUser.id}`);
       
       // Call the admin API endpoint to update user
@@ -345,7 +345,7 @@ const AdminDashboard: React.FC = () => {
         changedFields,
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
           }
         }
@@ -408,7 +408,7 @@ const AdminDashboard: React.FC = () => {
   // Fetch guests from API
   useEffect(() => {
     const fetchGuests = async () => {
-      if (!isAuthenticated || !token) {
+      if (!isAuthenticated || !accessToken) {
         return;
       }
 
@@ -420,7 +420,7 @@ const AdminDashboard: React.FC = () => {
         console.log('Attempting to fetch guests from:', `${API_URL}/guests`);
         const response = await axios.get(`${API_URL}/guests`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
             'Cache-Control': 'no-cache',
             'Pragma': 'no-cache'
           }
@@ -449,10 +449,10 @@ const AdminDashboard: React.FC = () => {
       }
     };
 
-    if (isAuthenticated && token) {
+    if (isAuthenticated && accessToken) {
       fetchGuests();
     }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, accessToken]);
 
   return (
     <PageContainer 
