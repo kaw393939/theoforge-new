@@ -137,11 +137,27 @@ const Header: React.FC = () => {
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/forge/philosopher-graph" className="cursor-pointer w-full">
+                    Philosopher Graph
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/forge/character-chat" className="cursor-pointer w-full">
+                    Genesis Engine
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                
                 <DropdownMenuItem onClick={logout} className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
+                
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
