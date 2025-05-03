@@ -8,6 +8,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     steps:
       # 1) Check out your code
       - name: Checkout code
@@ -27,10 +30,10 @@ jobs:
 
       # 4) Deploy to Vercel
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
+        uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}         # your Vercel API token
           vercel-org-id:  ${{ secrets.VERCEL_ORG_ID }}      # your Team/Org ID
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} # your Project ID
           working-directory: .      # adjust if your code lives in a subfolder
-          prod: true                # deploy to production (updates theoforge-new.vercel.app)
+          vercel-args: '--prod'                # deploy to production (updates theoforge-new.vercel.app)
