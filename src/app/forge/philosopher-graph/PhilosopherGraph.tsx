@@ -379,8 +379,9 @@ export default function PhilosopherGraphPage({ characters }: { characters: Chara
         {selectedNode && (
           characters.find(character => character.name === selectedNode.name) ? (
             <PhilosopherChatPanel 
-            selectedCharacter={characters.find(character => character.name === selectedNode.name) ?? {id: "unknown", name: "unknown"}} 
-          />
+              selectedCharacter={characters.find(character => character.name === selectedNode.name) ?? {id: "unknown", name: "unknown"}}
+              onClose={handleClosePanel}
+            />
           ) : (
             <NodeDetailPanel 
               node={selectedNode} 
