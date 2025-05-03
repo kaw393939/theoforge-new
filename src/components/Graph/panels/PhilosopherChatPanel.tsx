@@ -21,7 +21,13 @@ interface Message {
 type Theme = 'light' | 'dark';
 
 // Philosopher Chat
-export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCharacter: CharacterData}) {
+export default function PhilosopherChatPanel({
+  selectedCharacter,
+  onClose,
+}: {
+  selectedCharacter: CharacterData;
+  onClose: () => void;
+}) {
   // All messages for each philosopher
   const [philosopherMessages, setPhisolopherMessages] = useState<Record<string, Message[]>>({})
   const [selectedPhilosopherMessages, setSelectedPhilosopherMessages] = useState<Message[]>([]);
@@ -338,7 +344,7 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
             </div>
             <h2 className="text-lg font-semibold font-poppins text-gray-900 dark:text-white">{selectedCharacter.name}</h2>
           </div>
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center">
             <TooltipProvider>
               <Tooltip>
                 <button
@@ -353,6 +359,15 @@ export default function PhilosopherChatPanel({ selectedCharacter }: { selectedCh
                 <TooltipContent>Change Theme</TooltipContent>
               </Tooltip>
             </TooltipProvider>
+            {/* Add Close Button */}
+            <button
+              onClick={onClose}
+              className="ml-2 h-8 w-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition"
+              aria-label="Close panel"
+              type="button"
+            >
+              <XMarkIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            </button>
           </div>
         </div>
       </CardHeader>
