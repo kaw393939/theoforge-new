@@ -15,9 +15,14 @@ import {
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import Paragraph from '@/components/Common/Paragraph';
 import Button from '@/components/ui/button';
-import ForceGraph, { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d';
+import { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d';
 import { Loader2 } from 'lucide-react';
-
+import dynamic from 'next/dynamic';
+// Dynamically import the graph component to avoid SSR issues
+const ForceGraph = dynamic(
+  () => import('react-force-graph-2d'),
+  { ssr: false }
+);
 interface GraphNode {
   id?: string | number;
   label?: string;
@@ -65,7 +70,7 @@ const sampleGraphData = {
   ]
 };
 
-const KnowledgeGraphPage: React.FC = () => {
+export default function KnowledgeGraphPage() {
   const graphRef = useRef<ForceGraphMethods | undefined>(undefined);
   const graphContainerRef = useRef<HTMLDivElement>(null);
   const [graphData, setGraphData] = useState<GraphData>(sampleGraphData);
@@ -901,5 +906,3 @@ const KnowledgeGraphPage: React.FC = () => {
     </div>
   );
 }
-
-export default KnowledgeGraphPage;
