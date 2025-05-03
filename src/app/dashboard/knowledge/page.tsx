@@ -430,66 +430,66 @@ const KnowledgeGraphPage: React.FC = () => {
             </Paragraph>
             <div className="flex gap-2 flex-wrap">
               <Button 
-                className="flex items-center gap-2 w-32 bg-teal-500"
+                className="text-xs bg-teal-500 hover:bg-teal-600"
                 size="sm"
                 onClick={() => setIsNewGraphModalOpen(true)}
               >
-                <PlusIcon className="h-4 w-4" /> 
                 New Graph
+                <PlusIcon className="inline ml-2 h-4 w-4" />
               </Button>
               <Button
-                className="flex items-center gap-2 bg-gray-300"
+                className="text-xs bg-gray-300 hover:bg-gray-400"
                 size="sm"
                 onClick={handleExport}
-              >
-                <ArrowDownOnSquareIcon className="h-4 w-4" /> 
+              > 
                 Export
+                <ArrowDownOnSquareIcon className="inline ml-2 h-4 w-4" /> 
               </Button>
               <Button
-                className="flex items-center gap-2 bg-blue-500"
+                className="text-xs bg-blue-500 hover:bg-blue-600"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
               >
-                <ArrowUpOnSquareIcon className="h-4 w-4" /> 
                 Import
+                <ArrowUpOnSquareIcon className="inline ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap">
             <Button 
-              className="flex items-center gap-2 w-32 bg-teal-500"
+              className="text-xs bg-teal-500 hover:bg-teal-600"
               size="sm"
               onClick={() => setIsAddNodeModalOpen(true)}
             >
-              <PlusIcon className="h-4 w-4" /> 
               Add Node
+              <PlusIcon className="inline ml-2 h-4 w-4" />
             </Button>
             
             <Button 
-              className="flex items-center gap-2 w-32 bg-red-500"
+              className="text-xs bg-red-500 hover:bg-red-600"
               size="sm"
               onClick={() => setIsRemoveNodeModalOpen(true)}
             >
-              <PlusIcon className="h-4 w-4" /> 
               Remove Node
+              <PlusIcon className="inline ml-2 h-4 w-4" /> 
             </Button>
             
             <Button 
-              className="flex items-center gap-2 w-32 bg-teal-500"
+              className="text-xs bg-teal-500 hover:bg-teal-600"
               size="sm"
               onClick={() => setIsAddLinkModalOpen(true)}
             >
-              <PlusIcon className="h-4 w-4" /> 
               Add Link
+              <PlusIcon className="inline ml-2 h-4 w-4" /> 
             </Button>
             
             <Button 
-              className="flex items-center gap-2 w-32 bg-red-500"
+              className="text-xs bg-red-500 hover:bg-red-600"
               size="sm"
               onClick={() => setIsRemoveLinkModalOpen(true)}
             >
-              <PlusIcon className="h-4 w-4" /> 
               Remove Link
+              <PlusIcon className="inline ml-2 h-4 w-4" /> 
             </Button>
           </div>
         </div>
@@ -612,7 +612,7 @@ const KnowledgeGraphPage: React.FC = () => {
             </CardContent>
             <CardFooter>
               <Button
-                className="mr-2 bg-red-500"
+                className="mr-2 bg-red-500 hover:bg-red-600"
                 onClick={() => {
                   setIsAddNodeModalOpen(false);
                   setAddNodeFormData({});
@@ -621,7 +621,7 @@ const KnowledgeGraphPage: React.FC = () => {
                 Cancel
               </Button>
               <Button 
-                className="bg-teal-500"
+                className="bg-teal-500 hover:bg-teal-600"
                 onClick={() => {
                   addNode();
                 }}
@@ -661,7 +661,7 @@ const KnowledgeGraphPage: React.FC = () => {
             </CardContent>
             <CardFooter>
               <Button
-                className="mr-2 bg-gray-500"
+                className="mr-2 bg-gray-500 hover:bg-gray-600"
                 onClick={() => {
                   setIsRemoveNodeModalOpen(false);
                   setRemoveNodeFormData('');
@@ -670,7 +670,7 @@ const KnowledgeGraphPage: React.FC = () => {
                 Cancel
               </Button>
               <Button 
-                className="bg-red-500"
+                className="bg-red-500 hover:bg-red-600"
                 onClick={() => {
                   removeNode();
                 }}
@@ -737,7 +737,7 @@ const KnowledgeGraphPage: React.FC = () => {
             </CardContent>
             <CardFooter>
               <Button
-                className="mr-2 bg-red-500"
+                className="mr-2 bg-red-500 hover:bg-red-600"
                 onClick={() => {
                   setIsAddLinkModalOpen(false);
                   setAddLinkFormData({});
@@ -746,7 +746,7 @@ const KnowledgeGraphPage: React.FC = () => {
                 Cancel
               </Button>
               <Button 
-                className="bg-teal-500"
+                className="bg-teal-500 hover:bg-teal-600"
                 onClick={() => {
                   addLink();
                 }}
@@ -801,7 +801,7 @@ const KnowledgeGraphPage: React.FC = () => {
             </CardContent>
             <CardFooter>
               <Button
-                className="mr-2 bg-gray-500"
+                className="mr-2 bg-gray-500 hover:bg-gray-600"
                 onClick={() => {
                   setIsRemoveLinkModalOpen(false);
                   setRemoveLinkFormData({});
@@ -810,7 +810,7 @@ const KnowledgeGraphPage: React.FC = () => {
                 Cancel
               </Button>
               <Button 
-                className="bg-red-500"
+                className="bg-red-500 hover:bg-red-600"
                 onClick={() => {
                   removeLink();
                 }}
@@ -847,7 +847,7 @@ const KnowledgeGraphPage: React.FC = () => {
             </CardContent>
             <CardFooter>
               <Button
-                className="mr-2 bg-red-500"
+                className="mr-2 bg-red-500 hover:bg-red-600"
                 onClick={() => {
                   setIsNewGraphModalOpen(false);
                   setNewGraphPrompt('');
@@ -865,7 +865,7 @@ const KnowledgeGraphPage: React.FC = () => {
                 </Button>
               ) : (
                 <Button 
-                className="bg-teal-500"
+                className="bg-teal-500 hover:bg-teal-600"
                 onClick={() => {
                   createNewGraph();
                 }}

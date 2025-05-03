@@ -151,6 +151,13 @@ const Header: React.FC = () => {
                     Genesis Engine
                   </Link>
                 </DropdownMenuItem>
+                
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/knowledge" className="cursor-pointer w-full">
+                    Knowledge Graph
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 
                 <DropdownMenuItem onClick={logout} className="cursor-pointer">
