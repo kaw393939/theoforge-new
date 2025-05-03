@@ -3,12 +3,12 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { AlertCircle, Loader2, Search, UserCheck } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import  Button  from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { API_URL, AuthContext } from './AppContext';
 import axios from 'axios';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface Interaction {
   event: string,

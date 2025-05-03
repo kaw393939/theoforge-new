@@ -38,7 +38,7 @@ type Theme = "light" | "dark";
 // Rebuilt Contact Page Component
 const ContactPage: React.FC = () => {
   const [guestInfo, setGuestInfo] = useState<GuestInfo>({id: '', sessionCount: 0, questionsAnswered: []});
-  const [showContactForm, setShowContactForm] = useState(true);
+  const [showContactForm, setShowContactForm] = useState(false);
   const [showAlert, setShowAlert] = useState({ show: false, message: "", type: "success" });
   const [theme, setTheme] = useState<Theme>("light");
   const [isContacting, setIsContacting] = useState(false);
