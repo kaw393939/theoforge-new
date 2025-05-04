@@ -11,7 +11,7 @@ export async function getGuestId(): Promise<string | null> {
   if (!guestId) {
     try {
       // Create guest in backend and get id
-      const res = await axios.post(`${API_URL}/guests`, {session_id: uuidv4()});
+      const res = await axios.post(`${API_URL}/guests/`, {session_id: uuidv4()});
       guestId = res.data.id;
       if(guestId) localStorage.setItem(GUEST_ID_KEY, guestId);
       else {
