@@ -63,8 +63,8 @@ const GuestsTable: React.FC = () => {
       setSuccessMessage(null);
 
       try {
-        console.log('Attempting to fetch guests from:', `${API_URL}/guests`);
-        const response = await axios.get(`${API_URL}/guests`, {
+        console.log('Attempting to fetch guests from:', `${API_URL}/guests/`);
+        const response = await axios.get(`${API_URL}/guests/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             'Cache-Control': 'no-cache',
