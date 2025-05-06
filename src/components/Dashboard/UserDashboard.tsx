@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow
 } from "../../components/ui/table";
-import { Loader2, UserCheck, RefreshCw, MessageSquare, Calendar, Building, Tag } from 'lucide-react';
+import { Loader2, UserCheck, RefreshCw } from 'lucide-react';
 import { AuthContext } from './AppContext';
 
 // User Profile interface - what we store locally
@@ -27,33 +27,6 @@ interface UserProfile {
   zip_code?: string;
   card_number?: string;
   subscription_plan?: string;
-}
-
-// Guest Data interface for chat interactions
-interface GuestData {
-  id: string;
-  name?: string;
-  contact_info?: string;
-  company?: string;
-  industry?: string;
-  project_type?: string[];
-  budget?: string;
-  timeline?: string;
-  pain_points?: string[];
-  current_tech?: string[];
-  additional_notes?: string;
-  session_id: string;
-  status: string;
-  user_id?: string;
-  user_email?: string;
-  user_role?: string;
-  created_at: string;
-  interaction_events: string[];
-  interaction_history: {
-    event: string;
-    timestamp: string;
-  }[];
-  page_views: string[];
 }
 
 // Mock data for projects
@@ -77,8 +50,6 @@ const UserDashboard: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile>({});
   const [isLoading, setIsLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
-  const [selectedGuest, setSelectedGuest] = useState<GuestData | null>(null);
-  const [showGuestDetails, setShowGuestDetails] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -503,179 +474,6 @@ const UserDashboard: React.FC = () => {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Guest Details Modal */}
-      {showGuestDetails && selectedGuest && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold">Chat Interaction Details</h3>
-              <button 
-                onClick={() => {
-                  setShowGuestDetails(false);
-                  setSelectedGuest(null);
-                }}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Guest Information */}
-              <div className="space-y-4">
-                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                  <h4 className="text-lg font-medium flex items-center mb-3">
-                    <UserCheck className="h-5 w-5 mr-2" />
-                    Contact Information
-                  </h4>
-                  <div className="space-y-2">
-                    <div>
-                      <p className="text-sm text-gray-500">Name</p>
-                      <p className="font-medium">{selectedGuest.name || 'Not provided'}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-medium">{selectedGuest.contact_info || 'Not provided'}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Company</p>
-                      <p className="font-medium">{selectedGuest.company || 'Not provided'}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Industry</p>
-                      <p className="font-medium">{selectedGuest.industry || 'Not provided'}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                  <h4 className="text-lg font-medium flex items-center mb-3">
-                    <Building className="h-5 w-5 mr-2" />
-                    Project Details
-                  </h4>
-                  <div className="space-y-2">
-                    <div>
-                      <p className="text-sm text-gray-500">Project Type</p>
-                      <p className="font-medium">
-                        {selectedGuest.project_type && selectedGuest.project_type.length > 0 
-                          ? selectedGuest.project_type.join(', ') 
-                          : 'Not provided'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Budget</p>
-                      <p className="font-medium">{selectedGuest.budget || 'Not provided'}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Timeline</p>
-                      <p className="font-medium">{selectedGuest.timeline || 'Not provided'}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Technical Details */}
-              <div className="space-y-4">
-                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                  <h4 className="text-lg font-medium flex items-center mb-3">
-                    <Tag className="h-5 w-5 mr-2" />
-                    Technical Information
-                  </h4>
-                  <div className="space-y-2">
-                    <div>
-                      <p className="text-sm text-gray-500">Current Technologies</p>
-                      <p className="font-medium">
-                        {selectedGuest.current_tech && selectedGuest.current_tech.length > 0 
-                          ? selectedGuest.current_tech.join(', ') 
-                          : 'Not provided'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Pain Points</p>
-                      <p className="font-medium">
-                        {selectedGuest.pain_points && selectedGuest.pain_points.length > 0 
-                          ? selectedGuest.pain_points.join(', ') 
-                          : 'Not provided'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Additional Notes</p>
-                      <p className="font-medium">{selectedGuest.additional_notes || 'Not provided'}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                  <h4 className="text-lg font-medium flex items-center mb-3">
-                    <MessageSquare className="h-5 w-5 mr-2" />
-                    Interaction History
-                  </h4>
-                  <div className="space-y-2">
-                    <div>
-                      <p className="text-sm text-gray-500">Session ID</p>
-                      <p className="font-medium">{selectedGuest.session_id}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Status</p>
-                      <p className="font-medium">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          selectedGuest.status === 'NEW' ? 'bg-yellow-100 text-yellow-700' :
-                          selectedGuest.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-700' :
-                          'bg-green-100 text-green-700'
-                        }`}>
-                          {selectedGuest.status}
-                        </span>
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Created At</p>
-                      <p className="font-medium">{formatDate(selectedGuest.created_at)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">User Information</p>
-                      <p className="font-medium">
-                        {selectedGuest.user_id ? (
-                          <>
-                            {selectedGuest.user_email} ({selectedGuest.user_role})
-                          </>
-                        ) : 'Anonymous User'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <h4 className="text-lg font-medium flex items-center mb-3">
-                <Calendar className="h-5 w-5 mr-2" />
-                Page Views
-              </h4>
-              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                <ul className="list-disc pl-5 space-y-1">
-                  {selectedGuest.page_views.map((page, index) => (
-                    <li key={index}>{page}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end space-x-2">
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setShowGuestDetails(false);
-                  setSelectedGuest(null);
-                }}
-              >
-                Close
-              </Button>
-              <Button>Respond to Inquiry</Button>
-            </div>
-          </div>
-        </div>
-      )}
     </PageContainer>
   );
 }

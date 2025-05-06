@@ -372,7 +372,7 @@ export default function PhilosopherChatPanel({
         </div>
       </CardHeader>
       {/* Main chat area */}
-      <CardContent className="overflow-y-auto h-96 p-4 bg-white dark:bg-gray-900 relative scroll-smooth space-y-4">
+      <CardContent className="overflow-y-auto p-4 bg-white dark:bg-gray-900 relative scroll-smooth space-y-4">
           <div className="space-y-4 pb-4">
             {selectedPhilosopherMessages.map((msg) => 
               renderMessage(msg)

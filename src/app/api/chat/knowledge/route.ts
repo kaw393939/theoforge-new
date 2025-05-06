@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         },
         { role: 'user', content: prompt }
       ],
-      max_tokens: 500,
+      max_tokens: 2000,
       temperature: 0.7,
       response_format: {
         type: 'json_schema',
