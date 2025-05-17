@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter, Public_Sans } from 'next/font/google'; 
 import { siteConfig } from '@/config/site';
 import { Analytics } from '@vercel/analytics/react';
+import { AuthProvider } from '@/components/Dashboard/AppContext';
 
 // Configure Inter for headings
 const inter = Inter({
@@ -68,11 +69,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${inter.variable} ${publicSans.variable} scroll-smooth`} suppressHydrationWarning>
       <body className="min-h-screen font-sans antialiased bg-background text-foreground dark:bg-background dark:text-foreground">
-        <Header />
-        {/* Remove top padding to eliminate the white space */}
-        <main>{children}</main> 
-        <Footer />
-        <Analytics />
+        <AuthProvider>
+          <Header />
+          {/* Remove top padding to eliminate the white space */}
+          <main>{children}</main> 
+          <Footer />
+          <Analytics />
+        </AuthProvider>
       </body>
     </html>
   );

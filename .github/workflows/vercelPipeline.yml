@@ -1,0 +1,39 @@
+name: Deploy to Vercel on dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      # 1) Check out your code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2) Install the Node.js version your project needs
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'    # or whatever version you target
+
+      # 3) Install dependencies & run your build/tests
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+
+      # 4) Deploy to Vercel
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}         # your Vercel API token
+          vercel-org-id:  ${{ secrets.VERCEL_ORG_ID }}      # your Team/Org ID
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} # your Project ID
+          working-directory: .      # adjust if your code lives in a subfolder
+          vercel-args: '--prod'                # deploy to production (updates theoforge-new.vercel.app)
